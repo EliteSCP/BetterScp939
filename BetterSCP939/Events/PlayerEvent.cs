@@ -1,5 +1,6 @@
 ﻿using BetterSCP939.Extensions;
 using EXILED;
+using EXILED.Extensions;
 
 namespace BetterSCP939.Events
 {
@@ -9,14 +10,21 @@ namespace BetterSCP939.Events
 
         public PlayerEvent(BetterSCP939 pluginInstance) => this.pluginInstance = pluginInstance;
 
-        public void OnPlayerHurt(ref PlayerHurtEvent ev)
-        {
-
-        }
-
         public void OnSetClass(SetClassEvent ev)
         {
-            ev.Player.gameObject.AddComponent<CustomSCP939>();
+            if (ev.Player.GetNickname() == "Dedicated Server") return;
+
+            var betterSCP939 = ev.Player.gameObject.GetComponent<CustomSCP939>();
+
+            if (ev.Role == RoleType.Scp93953 || ev.Role == RoleType.Scp93989)
+            {
+                if (betterSCP939 != null) betterSCP939.Destroy();
+
+                ev.Player.gameObject.AddComponent<CustomSCP939>();
+
+                return;
+            }
+            else if (betterSCP939 != null) betterSCP939.Destroy();
         }
     }
 }
