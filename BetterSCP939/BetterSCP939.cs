@@ -1,5 +1,6 @@
 ﻿using BetterSCP939.Events;
 using EXILED;
+using Harmony;
 using System.Reflection;
 
 namespace BetterSCP939
@@ -44,6 +45,8 @@ namespace BetterSCP939
             if (!isEnabled) return;
 
             RegisterEvents();
+
+            HarmonyInstance.Create("com.iopietro.better.scp939").PatchAll(Assembly.GetExecutingAssembly());
 
             Log.Info($"{getName} has been enabled!");
         }

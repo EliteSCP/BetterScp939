@@ -73,6 +73,10 @@ namespace BetterSCP939.Extensions
             {
                 AngerMeter += ev.Amount;
 
+                if (AngerMeter > BetterSCP939.angerMeterMaximum) AngerMeter = BetterSCP939.angerMeterMaximum;
+                
+                playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
+
                 if (!angerMeterDecayCoroutine.IsRunning)
                 {
                     angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterSCP939.angerMeterDecayTime), Segment.FixedUpdate);
@@ -105,7 +109,7 @@ namespace BetterSCP939.Extensions
         {
             while (AngerMeter > 0)
             {
-                playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * 255;
+                playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
 
                 yield return Timing.WaitForSeconds(waitTime);
 
