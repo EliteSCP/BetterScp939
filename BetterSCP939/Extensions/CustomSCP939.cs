@@ -12,10 +12,11 @@ namespace BetterSCP939.Extensions
     {
         private ReferenceHub playerReferenceHub;
         private Scp207 scp207;
+        private SinkHole sinkHole;
         private List<DamageTypes.DamageType> excludedDamages;
-        private CoroutineHandle forcePositionCoroutine;
+        private CoroutineHandle forceSlowDownCoroutine;
         private CoroutineHandle angerMeterDecayCoroutine;
-        private const float forcePositionInterval = 0.1f;
+        private const float forceSlowDownInterval = 0.1f;
 
         public float AngerMeter { get; private set; }
 
@@ -26,6 +27,7 @@ namespace BetterSCP939.Extensions
 
             playerReferenceHub = GetComponent<ReferenceHub>();
             scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
+            sinkHole = (SinkHole)(typeof(PlyMovementSync).GetField("_sinkhole", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
             excludedDamages = new List<DamageTypes.DamageType>()
             {
                 DamageTypes.Tesla,
@@ -38,13 +40,14 @@ namespace BetterSCP939.Extensions
                 DamageTypes.None
             };
             AngerMeter = 0;
+            sinkHole.slowAmount = BetterSCP939.slowAmount;
         }
 
         private void Start() => Scale(BetterSCP939.size);
 
         private void Update()
         {
-            if (!scp207.Enabled) scp207.ServerEnable();
+            if (!scp207.Enabled && !sinkHole.Enabled) scp207.ServerEnable();
         }
 
         public void Destroy()
@@ -65,9 +68,9 @@ namespace BetterSCP939.Extensions
 
             if (ev.Attacker == playerReferenceHub)
             {
-                ev.Amount += (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
+                ev.Amount = BetterSCP939.baseDamage + (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
 
-                forcePositionCoroutine = Timing.RunCoroutine(ForcePosition(BetterSCP939.forcePositionTime, forcePositionInterval), Segment.FixedUpdate);
+                forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterSCP939.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
             }
             else if (ev.Player == playerReferenceHub)
             {
@@ -90,19 +93,22 @@ namespace BetterSCP939.Extensions
             if (ev.Player == playerReferenceHub) Destroy();
         }
 
-        private IEnumerator<float> ForcePosition(float totalWaitTime, float interval)
+        private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
         {
-            var oldPosition = playerReferenceHub.plyMovementSync.RealModelPosition;
             var waitedTime = 0f;
+
+            scp207.ServerDisable();
 
             while (waitedTime < totalWaitTime)
             {
-                playerReferenceHub.plyMovementSync.TargetForcePosition(playerReferenceHub.nicknameSync.connectionToClient, oldPosition);
+                if (!sinkHole.Enabled) sinkHole.ServerEnable();
 
                 waitedTime += interval;
 
                 yield return Timing.WaitForSeconds(interval);
             }
+
+            sinkHole.ServerDisable();
         }
 
         private IEnumerator<float> AngerMeterDecay(float waitTime)
@@ -121,7 +127,7 @@ namespace BetterSCP939.Extensions
 
         private void KillCoroutines()
         {
-            if (forcePositionCoroutine.IsRunning) Timing.KillCoroutines(forcePositionCoroutine);
+            if (forceSlowDownCoroutine.IsRunning) Timing.KillCoroutines(forceSlowDownCoroutine);
             if (angerMeterDecayCoroutine.IsRunning) Timing.KillCoroutines(angerMeterDecayCoroutine);
         }
 

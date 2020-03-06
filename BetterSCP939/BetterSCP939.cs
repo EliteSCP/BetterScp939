@@ -15,7 +15,9 @@ namespace BetterSCP939
         internal bool isEnabled;
 
         internal static float size;
-        internal static float forcePositionTime;
+        internal static float slowAmount;
+        internal static float baseDamage;
+        internal static float forceSlowDownTime;
         internal static float bonusAttackMaximum;
         internal static float angerMeterMaximum;
         internal static float angerMeterDecayTime;
@@ -72,6 +74,7 @@ namespace BetterSCP939
             PlayerEvent = new PlayerEvent(this);
 
             EXILED.Events.WaitingForPlayersEvent += RoundEvent.OnWaitingForPlayers;
+            EXILED.Events.RoundRestartEvent += RoundEvent.OnRoundRestart;
 
             EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
         }
@@ -82,6 +85,7 @@ namespace BetterSCP939
         internal void UnregisterEvents()
         {
             EXILED.Events.WaitingForPlayersEvent -= RoundEvent.OnWaitingForPlayers;
+            EXILED.Events.RoundRestartEvent -= RoundEvent.OnRoundRestart;
 
             EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
 
@@ -97,7 +101,9 @@ namespace BetterSCP939
             isEnabled = Config.GetBool("b939_enabled", true);
 
             size = Config.GetFloat("b939_size", 0.75f);
-            forcePositionTime = Config.GetFloat("b939_force_position_time", 2.5f);
+            slowAmount = Config.GetFloat("b939_slow_amount", 10f);
+            baseDamage = Config.GetFloat("b939_base_damage", 40f);
+            forceSlowDownTime = Config.GetFloat("b939_force_slow_down_time", 3f);
             bonusAttackMaximum = Config.GetFloat("b939_bonus_attack_maximum", 150f);
             angerMeterMaximum = Config.GetFloat("b939_anger_meter_maximum", 500f);
             angerMeterDecayTime = Config.GetFloat("b939_anger_meter_decay_time", 1f);
