@@ -74,7 +74,6 @@ namespace BetterSCP939
             PlayerEvent = new PlayerEvent(this);
 
             EXILED.Events.WaitingForPlayersEvent += RoundEvent.OnWaitingForPlayers;
-            EXILED.Events.RoundRestartEvent += RoundEvent.OnRoundRestart;
 
             EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
         }
@@ -85,7 +84,6 @@ namespace BetterSCP939
         internal void UnregisterEvents()
         {
             EXILED.Events.WaitingForPlayersEvent -= RoundEvent.OnWaitingForPlayers;
-            EXILED.Events.RoundRestartEvent -= RoundEvent.OnRoundRestart;
 
             EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
 

@@ -24,6 +24,8 @@ namespace BetterSCP939.Extensions
         {
             EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
             EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
+            EXILED.Events.RoundRestartEvent += OnRoundRestart;
+            EXILED.Events.SetClassEvent += OnSetClass;
 
             playerReferenceHub = GetComponent<ReferenceHub>();
             scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
@@ -54,6 +56,8 @@ namespace BetterSCP939.Extensions
         {
             EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
             EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
+            EXILED.Events.RoundRestartEvent -= OnRoundRestart;
+            EXILED.Events.SetClassEvent -= OnSetClass;
 
             KillCoroutines();
 
@@ -66,7 +70,7 @@ namespace BetterSCP939.Extensions
 
             if (excludedDamages.Contains(ev.DamageType)) return;
 
-            if (ev.Attacker == playerReferenceHub)
+            if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
             {
                 ev.Amount = BetterSCP939.baseDamage + (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
 
@@ -91,6 +95,18 @@ namespace BetterSCP939.Extensions
         public void OnPlayerLeave(PlayerLeaveEvent ev)
         {
             if (ev.Player == playerReferenceHub) Destroy();
+        }
+
+        public void OnRoundRestart() => Destroy();
+
+        public void OnSetClass(SetClassEvent ev)
+        {
+            if (ev.Player == playerReferenceHub && ev.Role != RoleType.Scp93953 && ev.Role != RoleType.Scp93989)
+            {
+                Scale(1);
+
+                Destroy();
+            }
         }
 
         private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)

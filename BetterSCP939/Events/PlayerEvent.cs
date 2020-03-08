@@ -24,7 +24,6 @@ namespace BetterSCP939.Events
 
                 return;
             }
-            else if (betterSCP939 != null) betterSCP939.Destroy();
         }
     }
 }
