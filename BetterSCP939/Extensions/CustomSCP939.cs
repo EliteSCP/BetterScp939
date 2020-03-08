@@ -34,6 +34,7 @@ namespace BetterSCP939.Extensions
             {
                 DamageTypes.Tesla,
                 DamageTypes.Wall,
+                DamageTypes.Nuke,
                 DamageTypes.RagdollLess,
                 DamageTypes.Contain,
                 DamageTypes.Lure,
