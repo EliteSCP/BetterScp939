@@ -1,8 +1,4 @@
-﻿using BetterSCP939.Extensions;
-using EXILED.Extensions;
-using System.Linq;
-
-namespace BetterSCP939.Events
+﻿namespace BetterSCP939.Events
 {
     public class RoundEvent
     {
