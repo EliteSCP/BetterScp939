@@ -161,11 +161,9 @@ namespace BetterSCP939.Extensions
 
             foreach (var player in PlayerManager.players)
             {
-                if (player == gameObject) continue;
-
                 var playerCon = player.GetComponent<NetworkIdentity>().connectionToClient;
 
-                playerCon.Send(destroyMessage, 0);
+                if (player != gameObject) playerCon.Send(destroyMessage, 0);
 
                 var sendSpawnMessageMethod = typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
 
