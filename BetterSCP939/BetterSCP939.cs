@@ -5,107 +5,100 @@ using System.Reflection;
 
 namespace BetterSCP939
 {
-    public class BetterSCP939 : Plugin
-    {
-        internal RoundEvent RoundEvent { get; set; }
-        internal PlayerEvent PlayerEvent { get; set; }
+	public class BetterSCP939 : Plugin
+	{
+		internal PlayerEvent PlayerEvent { get; set; }
 
-        #region Configs
+		#region Configs
 
-        internal bool isEnabled;
+		internal bool isEnabled;
 
-        internal static float size;
-        internal static float slowAmount;
-        internal static float baseDamage;
-        internal static float forceSlowDownTime;
-        internal static float bonusAttackMaximum;
-        internal static float angerMeterMaximum;
-        internal static float angerMeterDecayTime;
-        internal static float angerMeterDecayValue;
+		internal static float size;
+		internal static float slowAmount;
+		internal static float baseDamage;
+		internal static float forceSlowDownTime;
+		internal static float bonusAttackMaximum;
+		internal static float angerMeterMaximum;
+		internal static float angerMeterDecayTime;
+		internal static float angerMeterDecayValue;
 
-        #endregion
+		#endregion
 
-        public override string getName => "BetterSCP939";
+		public override string getName => "BetterSCP939";
 
-        /// <summary>
-        /// Fired when the plugin has been disabled.
-        /// </summary>
-        public override void OnDisable()
-        {
-            UnregisterEvents();
+		/// <summary>
+		/// Fired when the plugin has been disabled.
+		/// </summary>
+		public override void OnDisable()
+		{
+			UnregisterEvents();
 
-            Log.Info($"{getName} has been disabled!");
-        }
+			Log.Info($"{getName} has been disabled!");
+		}
 
-        /// <summary>
-        /// Fired when the plugin has been enabled.
-        /// </summary>
-        public override void OnEnable()
-        {
-            LoadConfigs();
+		/// <summary>
+		/// Fired when the plugin has been enabled.
+		/// </summary>
+		public override void OnEnable()
+		{
+			LoadConfigs();
 
-            if (!isEnabled) return;
+			if (!isEnabled) return;
 
-            RegisterEvents();
+			RegisterEvents();
 
-            HarmonyInstance.Create("com.iopietro.better.scp939").PatchAll(Assembly.GetExecutingAssembly());
+			HarmonyInstance.Create("com.iopietro.better.scp939").PatchAll(Assembly.GetExecutingAssembly());
 
-            Log.Info($"{getName} has been enabled!");
-        }
+			Log.Info($"{getName} has been enabled!");
+		}
 
-        /// <summary>
-        /// Fired when the plugin has been reloaded.
-        /// </summary>
-        public override void OnReload()
-        {
-            UnregisterEvents();
-            RegisterEvents();
-            LoadConfigs();
+		/// <summary>
+		/// Fired when the plugin has been reloaded.
+		/// </summary>
+		public override void OnReload()
+		{
+			UnregisterEvents();
+			RegisterEvents();
+			LoadConfigs();
 
-            Log.Info($"{getName} has been reloaded!");
-        }
+			Log.Info($"{getName} has been reloaded!");
+		}
 
-        /// <summary>
-        /// Registers the plugin events.
-        /// </summary>
-        internal void RegisterEvents()
-        {
-            RoundEvent = new RoundEvent(this);
-            PlayerEvent = new PlayerEvent(this);
+		/// <summary>
+		/// Registers the plugin events.
+		/// </summary>
+		internal void RegisterEvents()
+		{
+			PlayerEvent = new PlayerEvent(this);
 
-            EXILED.Events.WaitingForPlayersEvent += RoundEvent.OnWaitingForPlayers;
+			EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
+		}
 
-            EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
-        }
+		/// <summary>
+		/// Unregisters the plugin events.
+		/// </summary>
+		internal void UnregisterEvents()
+		{
+			EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
 
-        /// <summary>
-        /// Unregisters the plugin events.
-        /// </summary>
-        internal void UnregisterEvents()
-        {
-            EXILED.Events.WaitingForPlayersEvent -= RoundEvent.OnWaitingForPlayers;
+			PlayerEvent = null;
+		}
 
-            EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
+		/// <summary>
+		/// Loads the plugin configs.
+		/// </summary>
+		internal void LoadConfigs()
+		{
+			isEnabled = Config.GetBool("b939_enabled", true);
 
-            RoundEvent = null;
-            PlayerEvent = null;
-        }
-
-        /// <summary>
-        /// Loads the plugin configs.
-        /// </summary>
-        internal void LoadConfigs()
-        {
-            isEnabled = Config.GetBool("b939_enabled", true);
-
-            size = Config.GetFloat("b939_size", 0.75f);
-            slowAmount = Config.GetFloat("b939_slow_amount", 10f);
-            baseDamage = Config.GetFloat("b939_base_damage", 40f);
-            forceSlowDownTime = Config.GetFloat("b939_force_slow_down_time", 3f);
-            bonusAttackMaximum = Config.GetFloat("b939_bonus_attack_maximum", 150f);
-            angerMeterMaximum = Config.GetFloat("b939_anger_meter_maximum", 500f);
-            angerMeterDecayTime = Config.GetFloat("b939_anger_meter_decay_time", 1f);
-            angerMeterDecayValue = Config.GetFloat("b939_anger_meter_decay_value", 3f);
-        }
-    }
+			size = Config.GetFloat("b939_size", 0.75f);
+			slowAmount = Config.GetFloat("b939_slow_amount", 10f);
+			baseDamage = Config.GetFloat("b939_base_damage", 40f);
+			forceSlowDownTime = Config.GetFloat("b939_force_slow_down_time", 3f);
+			bonusAttackMaximum = Config.GetFloat("b939_bonus_attack_maximum", 150f);
+			angerMeterMaximum = Config.GetFloat("b939_anger_meter_maximum", 500f);
+			angerMeterDecayTime = Config.GetFloat("b939_anger_meter_decay_time", 1f);
+			angerMeterDecayValue = Config.GetFloat("b939_anger_meter_decay_value", 3f);
+		}
+	}
 }

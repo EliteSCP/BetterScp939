@@ -1,174 +1,148 @@
 ﻿using CustomPlayerEffects;
 using EXILED;
+using EXILED.Extensions;
 using MEC;
 using Mirror;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 
 namespace BetterSCP939.Extensions
 {
-    public class CustomSCP939 : NetworkBehaviour
-    {
-        private ReferenceHub playerReferenceHub;
-        private Scp207 scp207;
-        private SinkHole sinkHole;
-        private List<DamageTypes.DamageType> excludedDamages;
-        private CoroutineHandle forceSlowDownCoroutine;
-        private CoroutineHandle angerMeterDecayCoroutine;
-        private const float forceSlowDownInterval = 0.1f;
+	public class CustomSCP939 : NetworkBehaviour
+	{
+		private ReferenceHub playerReferenceHub;
+		private Scp207 scp207;
+		private SinkHole sinkHole;
+		private List<DamageTypes.DamageType> excludedDamages;
+		private CoroutineHandle forceSlowDownCoroutine;
+		private CoroutineHandle angerMeterDecayCoroutine;
+		private const float forceSlowDownInterval = 0.1f;
 
-        public float AngerMeter { get; private set; }
+		public float AngerMeter { get; private set; }
 
-        private void Awake()
-        {
-            EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
-            EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
-            EXILED.Events.RoundRestartEvent += OnRoundRestart;
-            EXILED.Events.SetClassEvent += OnSetClass;
+		private void Awake()
+		{
+			EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
+			EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
+			EXILED.Events.RoundRestartEvent += OnRoundRestart;
+			EXILED.Events.SetClassEvent += OnSetClass;
 
-            playerReferenceHub = GetComponent<ReferenceHub>();
-            scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
-            sinkHole = (SinkHole)(typeof(PlyMovementSync).GetField("_sinkhole", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
-            excludedDamages = new List<DamageTypes.DamageType>()
-            {
-                DamageTypes.Tesla,
-                DamageTypes.Wall,
-                DamageTypes.Nuke,
-                DamageTypes.RagdollLess,
-                DamageTypes.Contain,
-                DamageTypes.Lure,
-                DamageTypes.Recontainment,
-                DamageTypes.Scp207,
-                DamageTypes.None
-            };
-            AngerMeter = 0;
-            sinkHole.slowAmount = BetterSCP939.slowAmount;
-        }
+			playerReferenceHub = GetComponent<ReferenceHub>();
+			scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
+			sinkHole = (SinkHole)(typeof(PlyMovementSync).GetField("_sinkhole", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
+			excludedDamages = new List<DamageTypes.DamageType>()
+			{
+				DamageTypes.Tesla,
+				DamageTypes.Wall,
+				DamageTypes.Nuke,
+				DamageTypes.RagdollLess,
+				DamageTypes.Contain,
+				DamageTypes.Lure,
+				DamageTypes.Recontainment,
+				DamageTypes.Scp207,
+				DamageTypes.None
+			};
+			AngerMeter = 0;
+			sinkHole.slowAmount = BetterSCP939.slowAmount;
+		}
 
-        private void Start() => Scale(BetterSCP939.size);
+		private void Start() => playerReferenceHub.SetScale(BetterSCP939.size);
 
-        private void Update()
-        {
-            if (!scp207.Enabled && !sinkHole.Enabled) scp207.ServerEnable();
-        }
+		private void Update()
+		{
+			if (!scp207.Enabled && !sinkHole.Enabled) scp207.ServerEnable();
+		}
 
-        public void Destroy()
-        {
-            EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
-            EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
-            EXILED.Events.RoundRestartEvent -= OnRoundRestart;
-            EXILED.Events.SetClassEvent -= OnSetClass;
+		public void Destroy()
+		{
+			EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
+			EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
+			EXILED.Events.RoundRestartEvent -= OnRoundRestart;
+			EXILED.Events.SetClassEvent -= OnSetClass;
 
-            KillCoroutines();
+			KillCoroutines();
 
-            Destroy(this);
-        }
+			playerReferenceHub.SetScale(1);
 
-        public void OnPlayerHurt(ref PlayerHurtEvent ev)
-        {
-            if (ev.Player == playerReferenceHub && ev.DamageType == DamageTypes.Scp207) ev.Amount = 0;
+			Destroy(this);
+		}
 
-            if (excludedDamages.Contains(ev.DamageType)) return;
+		public void OnPlayerHurt(ref PlayerHurtEvent ev)
+		{
+			if (ev.Player == playerReferenceHub && ev.DamageType == DamageTypes.Scp207) ev.Amount = 0;
 
-            if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
-            {
-                ev.Amount = BetterSCP939.baseDamage + (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
+			if (excludedDamages.Contains(ev.DamageType)) return;
 
-                forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterSCP939.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
-            }
-            else if (ev.Player == playerReferenceHub)
-            {
-                AngerMeter += ev.Amount;
+			if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
+			{
+				ev.Amount = BetterSCP939.baseDamage + (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
 
-                if (AngerMeter > BetterSCP939.angerMeterMaximum) AngerMeter = BetterSCP939.angerMeterMaximum;
-                
-                playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
+				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterSCP939.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
+			}
+			else if (ev.Player == playerReferenceHub)
+			{
+				AngerMeter += ev.Amount;
 
-                if (!angerMeterDecayCoroutine.IsRunning)
-                {
-                    angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterSCP939.angerMeterDecayTime), Segment.FixedUpdate);
-                }
-            }
+				if (AngerMeter > BetterSCP939.angerMeterMaximum) AngerMeter = BetterSCP939.angerMeterMaximum;
 
-        }
+				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
 
-        public void OnPlayerLeave(PlayerLeaveEvent ev)
-        {
-            if (ev.Player == playerReferenceHub) Destroy();
-        }
+				if (!angerMeterDecayCoroutine.IsRunning)
+				{
+					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterSCP939.angerMeterDecayTime), Segment.FixedUpdate);
+				}
+			}
 
-        public void OnRoundRestart() => Destroy();
+		}
 
-        public void OnSetClass(SetClassEvent ev)
-        {
-            if (ev.Player == playerReferenceHub && ev.Role != RoleType.Scp93953 && ev.Role != RoleType.Scp93989)
-            {
-                Scale(1);
+		public void OnPlayerLeave(PlayerLeaveEvent ev)
+		{
+			if (ev.Player == playerReferenceHub) Destroy();
+		}
 
-                Destroy();
-            }
-        }
+		public void OnRoundRestart() => Destroy();
 
-        private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
-        {
-            var waitedTime = 0f;
+		public void OnSetClass(SetClassEvent ev)
+		{
+			if (ev.Player == playerReferenceHub && ev.Role != RoleType.Scp93953 && ev.Role != RoleType.Scp93989) Destroy();
+		}
 
-            scp207.ServerDisable();
+		private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
+		{
+			var waitedTime = 0f;
 
-            while (waitedTime < totalWaitTime)
-            {
-                if (!sinkHole.Enabled) sinkHole.ServerEnable();
+			scp207.ServerDisable();
 
-                waitedTime += interval;
+			while (waitedTime < totalWaitTime)
+			{
+				if (!sinkHole.Enabled) sinkHole.ServerEnable();
 
-                yield return Timing.WaitForSeconds(interval);
-            }
+				waitedTime += interval;
 
-            sinkHole.ServerDisable();
-        }
+				yield return Timing.WaitForSeconds(interval);
+			}
 
-        private IEnumerator<float> AngerMeterDecay(float waitTime)
-        {
-            while (AngerMeter > 0)
-            {
-                playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
+			sinkHole.ServerDisable();
+		}
 
-                yield return Timing.WaitForSeconds(waitTime);
+		private IEnumerator<float> AngerMeterDecay(float waitTime)
+		{
+			while (AngerMeter > 0)
+			{
+				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
 
-                AngerMeter -= BetterSCP939.angerMeterDecayValue;
+				yield return Timing.WaitForSeconds(waitTime);
 
-                if (AngerMeter < 0) AngerMeter = 0;
-            }
-        }
+				AngerMeter -= BetterSCP939.angerMeterDecayValue;
 
-        private void KillCoroutines()
-        {
-            if (forceSlowDownCoroutine.IsRunning) Timing.KillCoroutines(forceSlowDownCoroutine);
-            if (angerMeterDecayCoroutine.IsRunning) Timing.KillCoroutines(angerMeterDecayCoroutine);
-        }
+				if (AngerMeter < 0) AngerMeter = 0;
+			}
+		}
 
-        private void Scale(float size)
-        {
-            var identity = GetComponent<NetworkIdentity>();
-
-            gameObject.transform.localScale = Vector3.one * size;
-
-            var destroyMessage = new ObjectDestroyMessage
-            {
-                netId = identity.netId
-            };
-
-            foreach (var player in PlayerManager.players)
-            {
-                var playerCon = player.GetComponent<NetworkIdentity>().connectionToClient;
-
-                if (player != gameObject) playerCon.Send(destroyMessage, 0);
-
-                var sendSpawnMessageMethod = typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
-
-                sendSpawnMessageMethod?.Invoke(null, new object[] { identity, playerCon });
-            }
-        }
-    }
+		private void KillCoroutines()
+		{
+			if (forceSlowDownCoroutine.IsRunning) Timing.KillCoroutines(forceSlowDownCoroutine);
+			if (angerMeterDecayCoroutine.IsRunning) Timing.KillCoroutines(angerMeterDecayCoroutine);
+		}
+	}
 }
