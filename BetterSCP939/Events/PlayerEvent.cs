@@ -16,7 +16,7 @@ namespace BetterSCP939.Events
 
 			var betterSCP939 = ev.Player.gameObject.GetComponent<CustomSCP939>();
 
-			if (ev.Role == RoleType.Scp93953 || ev.Role == RoleType.Scp93989)
+			if (ev.Role.Is939())
 			{
 				if (betterSCP939 != null) betterSCP939.Destroy();
 

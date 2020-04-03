@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BetterSCP939.cs" />
+    <Compile Include="Configs.cs" />
     <Compile Include="Events\PlayerEvent.cs" />
     <Compile Include="Extensions\CustomSCP939.cs" />
     <Compile Include="Patches\PlayerHurtOverride.cs" />

@@ -22,10 +22,7 @@ namespace BetterSCP939.Extensions
 
 		private void Awake()
 		{
-			EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
-			EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
-			EXILED.Events.RoundRestartEvent += OnRoundRestart;
-			EXILED.Events.SetClassEvent += OnSetClass;
+			RegisterEvents();
 
 			playerReferenceHub = GetComponent<ReferenceHub>();
 			scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
@@ -42,31 +39,23 @@ namespace BetterSCP939.Extensions
 				DamageTypes.Scp207,
 				DamageTypes.None
 			};
-			AngerMeter = 0;
-			sinkHole.slowAmount = BetterSCP939.slowAmount;
+			AngerMeter = Configs.startingAnger;
+			sinkHole.slowAmount = Configs.slowAmount;
 		}
 
-		private void Start() => playerReferenceHub.SetScale(BetterSCP939.size);
+		private void Start() => playerReferenceHub.SetScale(Configs.size);
 
 		private void Update()
 		{
+			if (playerReferenceHub == null || !playerReferenceHub.GetRole().Is939())
+			{
+				Destroy();
+
+				return;
+			}
+
 			if (!scp207.Enabled && !sinkHole.Enabled) scp207.ServerEnable();
 		}
-
-		public void Destroy()
-		{
-			EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
-			EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
-			EXILED.Events.RoundRestartEvent -= OnRoundRestart;
-			EXILED.Events.SetClassEvent -= OnSetClass;
-
-			KillCoroutines();
-
-			playerReferenceHub.SetScale(1);
-
-			Destroy(this);
-		}
-
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
 			if (ev.Player == playerReferenceHub && ev.DamageType == DamageTypes.Scp207) ev.Amount = 0;
@@ -75,24 +64,23 @@ namespace BetterSCP939.Extensions
 
 			if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
 			{
-				ev.Amount = BetterSCP939.baseDamage + (AngerMeter / BetterSCP939.angerMeterMaximum) * BetterSCP939.bonusAttackMaximum;
+				ev.Amount = Configs.baseDamage + (AngerMeter / Configs.angerMeterMaximum) * Configs.bonusAttackMaximum;
 
-				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterSCP939.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
+				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(Configs.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
 			}
 			else if (ev.Player == playerReferenceHub)
 			{
 				AngerMeter += ev.Amount;
 
-				if (AngerMeter > BetterSCP939.angerMeterMaximum) AngerMeter = BetterSCP939.angerMeterMaximum;
+				if (AngerMeter > Configs.angerMeterMaximum) AngerMeter = Configs.angerMeterMaximum;
 
-				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
+				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / Configs.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
 
 				if (!angerMeterDecayCoroutine.IsRunning)
 				{
-					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterSCP939.angerMeterDecayTime), Segment.FixedUpdate);
+					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(Configs.angerMeterDecayTime), Segment.FixedUpdate);
 				}
 			}
-
 		}
 
 		public void OnPlayerLeave(PlayerLeaveEvent ev)
@@ -102,9 +90,35 @@ namespace BetterSCP939.Extensions
 
 		public void OnRoundRestart() => Destroy();
 
-		public void OnSetClass(SetClassEvent ev)
+		public void Destroy()
 		{
-			if (ev.Player == playerReferenceHub && ev.Role != RoleType.Scp93953 && ev.Role != RoleType.Scp93989) Destroy();
+			UnregisterEvents();
+
+			KillCoroutines();
+
+			scp207.ServerDisable();
+			sinkHole.ServerDisable();
+
+			AngerMeter = 0;
+
+			playerReferenceHub.SetScale(1);		
+			playerReferenceHub.SetAdrenalineHealth(0);
+
+			Destroy(this);
+		}
+
+		private void RegisterEvents()
+		{
+			EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
+			EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
+			EXILED.Events.RoundRestartEvent += OnRoundRestart;
+		}
+
+		private void UnregisterEvents()
+		{
+			EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
+			EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
+			EXILED.Events.RoundRestartEvent -= OnRoundRestart;
 		}
 
 		private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
@@ -129,11 +143,11 @@ namespace BetterSCP939.Extensions
 		{
 			while (AngerMeter > 0)
 			{
-				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / BetterSCP939.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
-
+				playerReferenceHub.SetAdrenalineHealth((byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth()));
+				Log.Info($"Impostata adrenalina: {playerReferenceHub.GetRole()}");
 				yield return Timing.WaitForSeconds(waitTime);
 
-				AngerMeter -= BetterSCP939.angerMeterDecayValue;
+				AngerMeter -= Configs.angerMeterDecayValue;
 
 				if (AngerMeter < 0) AngerMeter = 0;
 			}

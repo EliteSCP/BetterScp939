@@ -1,5 +1,7 @@
 ﻿using BetterSCP939.Events;
+using BetterSCP939.Extensions;
 using EXILED;
+using EXILED.Extensions;
 using Harmony;
 using System.Reflection;
 
@@ -7,24 +9,30 @@ namespace BetterSCP939
 {
 	public class BetterSCP939 : Plugin
 	{
+		private int patchesCounter;
+		private HarmonyInstance harmonyInstance;
+
 		internal PlayerEvent PlayerEvent { get; set; }
-
-		#region Configs
-
-		internal bool isEnabled;
-
-		internal static float size;
-		internal static float slowAmount;
-		internal static float baseDamage;
-		internal static float forceSlowDownTime;
-		internal static float bonusAttackMaximum;
-		internal static float angerMeterMaximum;
-		internal static float angerMeterDecayTime;
-		internal static float angerMeterDecayValue;
-
-		#endregion
+		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 8 };
 
 		public override string getName => "BetterSCP939";
+
+		/// <summary>
+		/// Fired when the plugin has been enabled.
+		/// </summary>
+		public override void OnEnable()
+		{
+			Configs.Reload();
+
+			if (!Configs.isEnabled) return;
+
+			RegisterEvents();
+
+			harmonyInstance = HarmonyInstance.Create($"com.iopietro.betterscp939.{patchesCounter++}");
+			harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+
+			Log.Info($"{getName} has been enabled!");
+		}
 
 		/// <summary>
 		/// Fired when the plugin has been disabled.
@@ -33,36 +41,20 @@ namespace BetterSCP939
 		{
 			UnregisterEvents();
 
+			harmonyInstance.UnpatchAll();
+
+			foreach (var player in Player.GetHubs())
+			{
+				if (player.TryGetComponent<CustomSCP939>(out var customSCP939)) customSCP939.Destroy();
+			}
+
 			Log.Info($"{getName} has been disabled!");
-		}
-
-		/// <summary>
-		/// Fired when the plugin has been enabled.
-		/// </summary>
-		public override void OnEnable()
-		{
-			LoadConfigs();
-
-			if (!isEnabled) return;
-
-			RegisterEvents();
-
-			HarmonyInstance.Create("com.iopietro.better.scp939").PatchAll(Assembly.GetExecutingAssembly());
-
-			Log.Info($"{getName} has been enabled!");
 		}
 
 		/// <summary>
 		/// Fired when the plugin has been reloaded.
 		/// </summary>
-		public override void OnReload()
-		{
-			UnregisterEvents();
-			RegisterEvents();
-			LoadConfigs();
-
-			Log.Info($"{getName} has been reloaded!");
-		}
+		public override void OnReload() => Log.Info($"{getName} has been reloaded!");
 
 		/// <summary>
 		/// Registers the plugin events.
@@ -82,23 +74,6 @@ namespace BetterSCP939
 			EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
 
 			PlayerEvent = null;
-		}
-
-		/// <summary>
-		/// Loads the plugin configs.
-		/// </summary>
-		internal void LoadConfigs()
-		{
-			isEnabled = Config.GetBool("b939_enabled", true);
-
-			size = Config.GetFloat("b939_size", 0.75f);
-			slowAmount = Config.GetFloat("b939_slow_amount", 10f);
-			baseDamage = Config.GetFloat("b939_base_damage", 40f);
-			forceSlowDownTime = Config.GetFloat("b939_force_slow_down_time", 3f);
-			bonusAttackMaximum = Config.GetFloat("b939_bonus_attack_maximum", 150f);
-			angerMeterMaximum = Config.GetFloat("b939_anger_meter_maximum", 500f);
-			angerMeterDecayTime = Config.GetFloat("b939_anger_meter_decay_time", 1f);
-			angerMeterDecayValue = Config.GetFloat("b939_anger_meter_decay_value", 3f);
 		}
 	}
 }
