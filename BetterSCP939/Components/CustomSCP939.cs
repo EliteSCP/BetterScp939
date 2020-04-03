@@ -85,16 +85,20 @@ namespace BetterSCP939.Components
 
 		public void OnPlayerLeave(PlayerLeaveEvent ev)
 		{
-			if (ev.Player == playerReferenceHub) Destroy();
+			if (ev.Player == playerReferenceHub) PartiallyDestroy();
 		}
 
-		public void OnRoundRestart() => Destroy();
+		public void OnRoundRestart() => PartiallyDestroy();
+
+		public void PartiallyDestroy()
+		{
+			UnregisterEvents();
+			KillCoroutines();
+		}
 
 		public void Destroy()
 		{
-			UnregisterEvents();
-
-			KillCoroutines();
+			PartiallyDestroy();
 
 			scp207.ServerDisable();
 			sinkHole.ServerDisable();
