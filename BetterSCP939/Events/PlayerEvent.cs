@@ -1,4 +1,4 @@
-﻿using BetterSCP939.Extensions;
+﻿using BetterSCP939.Components;
 using EXILED;
 using EXILED.Extensions;
 

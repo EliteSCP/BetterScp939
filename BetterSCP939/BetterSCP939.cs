@@ -1,9 +1,10 @@
 ﻿using BetterSCP939.Events;
-using BetterSCP939.Extensions;
+using BetterSCP939.Components;
 using EXILED;
 using EXILED.Extensions;
 using Harmony;
 using System.Reflection;
+using System;
 
 namespace BetterSCP939
 {
@@ -13,7 +14,7 @@ namespace BetterSCP939
 		private HarmonyInstance harmonyInstance;
 
 		internal PlayerEvent PlayerEvent { get; set; }
-		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 8 };
+		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 10 };
 
 		public override string getName => "BetterSCP939";
 
@@ -22,6 +23,11 @@ namespace BetterSCP939
 		/// </summary>
 		public override void OnEnable()
 		{
+			if (Version.Parse($"{EventPlugin.Version.Major}.{EventPlugin.Version.Minor}.{EventPlugin.Version.Patch}") < Version.Parse($"{ExiledVersion.Major}.{ExiledVersion.Minor}.{ExiledVersion.Patch}"))
+			{
+				Log.Warn($"You're running an older version of EXILED ({EventPlugin.Version.Major}.{EventPlugin.Version.Minor}.{EventPlugin.Version.Patch}), the plugin may not be compatible with it! Recommended version: {ExiledVersion.Major}.{ExiledVersion.Minor}.{ExiledVersion.Patch}");
+			}
+
 			Configs.Reload();
 
 			if (!Configs.isEnabled) return;

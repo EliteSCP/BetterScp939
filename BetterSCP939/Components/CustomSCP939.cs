@@ -6,7 +6,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace BetterSCP939.Extensions
+namespace BetterSCP939.Components
 {
 	public class CustomSCP939 : NetworkBehaviour
 	{
