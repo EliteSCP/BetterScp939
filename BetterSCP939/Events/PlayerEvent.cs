@@ -6,10 +6,6 @@ namespace BetterSCP939.Events
 {
 	public class PlayerEvent
 	{
-		private readonly BetterSCP939 pluginInstance;
-
-		public PlayerEvent(BetterSCP939 pluginInstance) => this.pluginInstance = pluginInstance;
-
 		public void OnSetClass(SetClassEvent ev)
 		{
 			if (ev.Player.GetNickname() == "Dedicated Server") return;
