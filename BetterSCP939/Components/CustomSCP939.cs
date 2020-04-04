@@ -4,7 +4,6 @@ using EXILED.Extensions;
 using MEC;
 using Mirror;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace BetterSCP939.Components
 {
@@ -25,8 +24,8 @@ namespace BetterSCP939.Components
 			RegisterEvents();
 
 			playerReferenceHub = GetComponent<ReferenceHub>();
-			scp207 = (Scp207)(typeof(PlyMovementSync).GetField("_scp207", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
-			sinkHole = (SinkHole)(typeof(PlyMovementSync).GetField("_sinkhole", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(playerReferenceHub.plyMovementSync));
+			scp207 = playerReferenceHub.plyMovementSync._scp207;
+			sinkHole = playerReferenceHub.plyMovementSync._sinkhole;
 			excludedDamages = new List<DamageTypes.DamageType>()
 			{
 				DamageTypes.Tesla,
@@ -148,7 +147,7 @@ namespace BetterSCP939.Components
 			while (AngerMeter > 0)
 			{
 				playerReferenceHub.SetAdrenalineHealth((byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth()));
-				Log.Info($"Impostata adrenalina: {playerReferenceHub.GetRole()}");
+
 				yield return Timing.WaitForSeconds(waitTime);
 
 				AngerMeter -= Configs.angerMeterDecayValue;

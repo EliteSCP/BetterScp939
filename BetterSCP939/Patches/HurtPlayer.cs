@@ -2,15 +2,15 @@
 using Harmony;
 using Mirror;
 using RemoteAdmin;
-using System.Reflection;
+
 using UnityEngine;
 
 namespace BetterSCP939.Patches
 {
 	[HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]
-	public class PlayerHurtOverride
+	public class HurtPlayer
 	{
-		public static bool Prefix(PlayerStats __instance, PlayerStats.HitInfo info, GameObject go, ref bool __result, bool ____allowSPDmg, Scp079Interactable.InteractableType[] ____filters, ref int ___killstreak, ref float ___killstreak_time, bool ____pocketCleanup)
+		public static bool Prefix(PlayerStats __instance, PlayerStats.HitInfo info, GameObject go, ref bool __result)
 		{
 			bool result = false;
 			bool flag = go == null;
@@ -23,7 +23,7 @@ namespace BetterSCP939.Patches
 				else
 				{
 					PlayerStats component = go.GetComponent<PlayerStats>();
-					info.Amount = ((component != null) ? Mathf.Abs(component.health + component.syncArtificialHealth + 10f) : Mathf.Abs(999999f));
+					info.Amount = ((component != null) ? Mathf.Abs(component.health + (float)component.syncArtificialHealth + 10f) : Mathf.Abs(999999f));
 				}
 			}
 			if (info.Amount > 2.14748365E+09f)
@@ -52,7 +52,7 @@ namespace BetterSCP939.Patches
 				__result = false;
 				return false;
 			}
-			if (component3.SpawnProtected && !____allowSPDmg)
+			if (component3.SpawnProtected && !__instance._allowSPDmg)
 			{
 				__result = false;
 				return false;
@@ -71,7 +71,7 @@ namespace BetterSCP939.Patches
 			}
 			else
 			{
-				if (component2.unsyncedArtificialHealth > 0f && component3.CurClass != RoleType.Scp93953 && component3.CurClass != RoleType.Scp93989)
+				if (component2.unsyncedArtificialHealth > 0f && !component3.CurClass.Is939())
 				{
 					float num = info.Amount * __instance.artificialNormalRatio;
 					float num2 = info.Amount - num;
@@ -103,7 +103,7 @@ namespace BetterSCP939.Patches
 				{
 					Scp079Interactable.ZoneAndRoom otherRoom = go.GetComponent<Scp079PlayerScript>().GetOtherRoom();
 					bool flag2 = false;
-					foreach (Scp079Interaction scp079Interaction in scp079PlayerScript.ReturnRecentHistory(12f, ____filters))
+					foreach (Scp079Interaction scp079Interaction in scp079PlayerScript.ReturnRecentHistory(12f, __instance._filters))
 					{
 						foreach (Scp079Interactable.ZoneAndRoom zoneAndRoom in scp079Interaction.interactable.currentZonesAndRooms)
 						{
@@ -159,16 +159,16 @@ namespace BetterSCP939.Patches
 							__instance.TargetAchieve(__instance.connectionToClient, "betrayal");
 						}
 					}
-					if (Time.realtimeSinceStartup - ___killstreak_time > 30f || ___killstreak == 0)
+					if (Time.realtimeSinceStartup - __instance.killstreak_time > 30f || __instance.killstreak == 0)
 					{
-						___killstreak = 0;
-						___killstreak_time = Time.realtimeSinceStartup;
+						__instance.killstreak = 0;
+						__instance.killstreak_time = Time.realtimeSinceStartup;
 					}
 					if (__instance.GetComponent<WeaponManager>().GetShootPermission(component3, true))
 					{
-						___killstreak++;
+						__instance.killstreak++;
 					}
-					if (___killstreak > 5)
+					if (__instance.killstreak > 5)
 					{
 						__instance.TargetAchieve(__instance.connectionToClient, "pewpew");
 					}
@@ -196,7 +196,7 @@ namespace BetterSCP939.Patches
 				info.GetDamageName(),
 				"."
 				}), ServerLogs.ServerLogType.KillLog);
-				if (!____pocketCleanup || info.GetDamageType() != DamageTypes.Pocket)
+				if (!__instance._pocketCleanup || info.GetDamageType() != DamageTypes.Pocket)
 				{
 					go.GetComponent<Inventory>().ServerDropAll();
 					if (component3.Classes.CheckBounds(component3.CurClass) && info.GetDamageType() != DamageTypes.RagdollLess)
@@ -260,8 +260,7 @@ namespace BetterSCP939.Patches
 				float num3 = 40f;
 				if (info.GetDamageType().isWeapon)
 				{
-					var GetPlayerOfID = (typeof(PlayerStats)).GetMethod("GetPlayerOfID", BindingFlags.Instance | BindingFlags.NonPublic);
-					GameObject playerOfID = (GameObject)GetPlayerOfID.Invoke(__instance, new object[] { info.PlyId });
+					GameObject playerOfID = __instance.GetPlayerOfID(info.PlyId);
 					if (playerOfID != null)
 					{
 						pos = go.transform.InverseTransformPoint(playerOfID.transform.position).normalized;
@@ -276,8 +275,7 @@ namespace BetterSCP939.Patches
 						component5.OverridePosition(Vector3.down * 1998.5f, 0f, true);
 					}
 				}
-				var TargetOofEffect = (typeof(PlayerStats)).GetMethod("TargetOofEffect", BindingFlags.Instance | BindingFlags.NonPublic);
-				TargetOofEffect.Invoke(__instance, new object[] { go.GetComponent<NetworkIdentity>().connectionToClient, pos, Mathf.Clamp01(info.Amount / num3) });
+				__instance.TargetOofEffect(go.GetComponent<NetworkIdentity>().connectionToClient, pos, Mathf.Clamp01(info.Amount / num3));
 			}
 			__result = result;
 			return false;

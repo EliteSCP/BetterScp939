@@ -1,10 +1,10 @@
-﻿using BetterSCP939.Events;
-using BetterSCP939.Components;
+﻿using BetterSCP939.Components;
+using BetterSCP939.Events;
 using EXILED;
 using EXILED.Extensions;
 using Harmony;
-using System.Reflection;
 using System;
+using System.Reflection;
 
 namespace BetterSCP939
 {
@@ -15,12 +15,10 @@ namespace BetterSCP939
 
 		internal PlayerEvent PlayerEvent { get; set; }
 		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 10 };
+		internal Version Version { get; private set; } = Assembly.GetExecutingAssembly().GetName().Version;
 
-		public override string getName => "BetterSCP939";
+		public override string getName => $"BetterSCP939 {Version.Major}.{Version.Minor}.{Version.Build}";
 
-		/// <summary>
-		/// Fired when the plugin has been enabled.
-		/// </summary>
 		public override void OnEnable()
 		{
 			if (Version.Parse($"{EventPlugin.Version.Major}.{EventPlugin.Version.Minor}.{EventPlugin.Version.Patch}") < Version.Parse($"{ExiledVersion.Major}.{ExiledVersion.Minor}.{ExiledVersion.Patch}"))
@@ -40,9 +38,6 @@ namespace BetterSCP939
 			Log.Info($"{getName} has been enabled!");
 		}
 
-		/// <summary>
-		/// Fired when the plugin has been disabled.
-		/// </summary>
 		public override void OnDisable()
 		{
 			UnregisterEvents();
@@ -57,14 +52,8 @@ namespace BetterSCP939
 			Log.Info($"{getName} has been disabled!");
 		}
 
-		/// <summary>
-		/// Fired when the plugin has been reloaded.
-		/// </summary>
 		public override void OnReload() => Log.Info($"{getName} has been reloaded!");
 
-		/// <summary>
-		/// Registers the plugin events.
-		/// </summary>
 		internal void RegisterEvents()
 		{
 			PlayerEvent = new PlayerEvent(this);
@@ -72,9 +61,6 @@ namespace BetterSCP939
 			EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
 		}
 
-		/// <summary>
-		/// Unregisters the plugin events.
-		/// </summary>
 		internal void UnregisterEvents()
 		{
 			EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;

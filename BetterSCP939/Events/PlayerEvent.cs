@@ -14,10 +14,10 @@ namespace BetterSCP939.Events
 		{
 			if (ev.Player.GetNickname() == "Dedicated Server") return;
 
-			var betterSCP939 = ev.Player.gameObject.GetComponent<CustomSCP939>();
-
 			if (ev.Role.Is939())
 			{
+				var betterSCP939 = ev.Player.gameObject.GetComponent<CustomSCP939>();
+
 				if (betterSCP939 != null) betterSCP939.Destroy();
 
 				ev.Player.gameObject.AddComponent<CustomSCP939>();
