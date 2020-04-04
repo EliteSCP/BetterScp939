@@ -47,7 +47,7 @@ namespace BetterSCP939
 
 		internal void RegisterEvents()
 		{
-			PlayerEvent = new PlayerEvent(this);
+			PlayerEvent = new PlayerEvent();
 
 			EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
 		}
