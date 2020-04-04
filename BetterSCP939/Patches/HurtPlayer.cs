@@ -23,7 +23,7 @@ namespace BetterSCP939.Patches
 				else
 				{
 					PlayerStats component = go.GetComponent<PlayerStats>();
-					info.Amount = ((component != null) ? Mathf.Abs(component.health + (float)component.syncArtificialHealth + 10f) : Mathf.Abs(999999f));
+					info.Amount = ((component != null) ? Mathf.Abs(component.health + component.syncArtificialHealth + 10f) : Mathf.Abs(999999f));
 				}
 			}
 			if (info.Amount > 2.14748365E+09f)

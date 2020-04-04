@@ -104,7 +104,7 @@ namespace BetterSCP939.Components
 
 			AngerMeter = 0;
 
-			playerReferenceHub.SetScale(1);		
+			playerReferenceHub.SetScale(1);
 			playerReferenceHub.SetAdrenalineHealth(0);
 
 			Destroy(this);
