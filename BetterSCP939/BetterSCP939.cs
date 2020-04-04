@@ -2,7 +2,6 @@
 using BetterSCP939.Events;
 using EXILED;
 using EXILED.Extensions;
-using Harmony;
 using System;
 using System.Reflection;
 
@@ -10,9 +9,6 @@ namespace BetterSCP939
 {
 	public class BetterSCP939 : Plugin
 	{
-		private int patchesCounter;
-		private HarmonyInstance harmonyInstance;
-
 		internal PlayerEvent PlayerEvent { get; set; }
 		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 10 };
 		internal Version Version { get; private set; } = Assembly.GetExecutingAssembly().GetName().Version;
@@ -32,17 +28,12 @@ namespace BetterSCP939
 
 			RegisterEvents();
 
-			harmonyInstance = HarmonyInstance.Create($"com.iopietro.betterscp939.{patchesCounter++}");
-			harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
-
 			Log.Info($"{getName} has been enabled!");
 		}
 
 		public override void OnDisable()
 		{
 			UnregisterEvents();
-
-			harmonyInstance.UnpatchAll();
 
 			foreach (var player in Player.GetHubs())
 			{

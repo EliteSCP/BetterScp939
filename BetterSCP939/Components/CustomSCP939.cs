@@ -71,9 +71,13 @@ namespace BetterSCP939.Components
 			{
 				AngerMeter += ev.Amount;
 
+				playerReferenceHub.AddHealth(-ev.Amount);
+
+				ev.Amount = 0;
+
 				if (AngerMeter > Configs.angerMeterMaximum) AngerMeter = Configs.angerMeterMaximum;
 
-				playerReferenceHub.playerStats.unsyncedArtificialHealth = (AngerMeter / Configs.angerMeterMaximum) * playerReferenceHub.playerStats.maxArtificialHealth;
+				playerReferenceHub.SetAdrenalineHealth((byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth()));
 
 				if (!angerMeterDecayCoroutine.IsRunning)
 				{

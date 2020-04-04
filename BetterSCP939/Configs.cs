@@ -23,8 +23,8 @@ namespace BetterSCP939
 			isEnabled = Plugin.Config.GetBool("b939_enabled", true);
 			size = Plugin.Config.GetFloat("b939_size", 0.75f);
 			slowAmount = Plugin.Config.GetFloat("b939_slow_amount", 10f);
-			baseDamage = Plugin.Config.GetFloat("b939_base_damage", 40f);
 			forceSlowDownTime = Plugin.Config.GetFloat("b939_force_slow_down_time", 3f);
+			baseDamage = Plugin.Config.GetFloat("b939_base_damage", 40f);
 			bonusAttackMaximum = Plugin.Config.GetFloat("b939_bonus_attack_maximum", 150f);
 			angerMeterMaximum = Plugin.Config.GetFloat("b939_anger_meter_maximum", 500f);
 			angerMeterDecayTime = Plugin.Config.GetFloat("b939_anger_meter_decay_time", 1f);
