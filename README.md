@@ -9,7 +9,7 @@ An in-game TextChat plugin for SCP:SL.
 ## How to install
 Put **BetterSCP939.dll** inside `%appdata%\Plugins` if you're on **Windows** or `~/.config/Plugins` on **Linux**.
 
-### Configs
+## Configs
 | Name | Type | Default Value | Description |
 | --- | --- | --- | --- |
 | b939_enabled | Boolean | True | Enable/Disable the plugin. |
