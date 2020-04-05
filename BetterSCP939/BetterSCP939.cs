@@ -35,7 +35,7 @@ namespace BetterSCP939
 		{
 			UnregisterEvents();
 
-			foreach (var player in Player.GetHubs())
+			foreach (var player in Team.SCP.GetHubs())
 			{
 				if (player.TryGetComponent<CustomSCP939>(out var customSCP939)) customSCP939.Destroy();
 			}
