@@ -5,6 +5,8 @@ An **upgraded** version of the already existing **SCP-939**.
 In return, its **attack** will be **boosted** based on the damage taken.
 The adrenaline bar will show how much **angry** it is.
 
+**Credits to Reddking#2021 for the great idea.**
+
 ## Minimum requirements
 [EXILED](https://github.com/galaxy119/EXILED) **1.9.10+**
 
