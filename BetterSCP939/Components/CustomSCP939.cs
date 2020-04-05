@@ -42,7 +42,16 @@ namespace BetterSCP939.Components
 			sinkHole.slowAmount = Configs.slowAmount;
 		}
 
-		private void Start() => playerReferenceHub.SetScale(Configs.size);
+		private void Start()
+		{
+			playerReferenceHub.SetScale(Configs.size);
+
+			if (Configs.showSpawnBroadcastMessage)
+			{
+				playerReferenceHub.ClearBroadcasts();
+				playerReferenceHub.Broadcast(Configs.spawnBroadcastMessageDuration, string.Format(Configs.spawnBroadcastMessage, Configs.forceSlowDownTime), false);
+			}
+		}
 
 		private void Update()
 		{
