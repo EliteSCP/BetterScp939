@@ -1,5 +1,9 @@
 # BetterSCP939
-An in-game TextChat plugin for SCP:SL.
+An **upgraded** version of the already existing **SCP-939**.
+
+**SCP-939** size has been **reduced by 25%**, it's **faster than humans** and will get **slowed down** after hurting someone.
+In return, its **attack** will be **boosted** based on the damage taken.
+The adrenaline bar will show how much **angry** it is.
 
 ## Minimum requirements
 [EXILED](https://github.com/galaxy119/EXILED) **1.9.10+**
