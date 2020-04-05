@@ -2,12 +2,12 @@
 using EXILED;
 using EXILED.Extensions;
 using MEC;
-using Mirror;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BetterSCP939.Components
 {
-	public class CustomSCP939 : NetworkBehaviour
+	public class CustomSCP939 : MonoBehaviour
 	{
 		private ReferenceHub playerReferenceHub;
 		private Scp207 scp207;
@@ -49,7 +49,6 @@ namespace BetterSCP939.Components
 			if (playerReferenceHub == null || !playerReferenceHub.GetRole().Is939())
 			{
 				Destroy();
-
 				return;
 			}
 
@@ -57,32 +56,33 @@ namespace BetterSCP939.Components
 		}
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
-			if (ev.Player == playerReferenceHub && ev.DamageType == DamageTypes.Scp207) ev.Amount = 0;
-
-			if (excludedDamages.Contains(ev.DamageType)) return;
-
-			if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
+			if (ev.Player == playerReferenceHub)
 			{
-				ev.Amount = Configs.baseDamage + (AngerMeter / Configs.angerMeterMaximum) * Configs.bonusAttackMaximum;
+				if (ev.DamageType != DamageTypes.Scp207) playerReferenceHub.AddHealth(ev.Amount < 0 ? -9999999f : -ev.Amount);
 
-				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(Configs.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
-			}
-			else if (ev.Player == playerReferenceHub)
-			{
-				AngerMeter += ev.Amount;
-
-				playerReferenceHub.AddHealth(-ev.Amount);
+				if (!excludedDamages.Contains(ev.DamageType)) AngerMeter += ev.Amount;
+				else
+				{
+					ev.Amount = 0;
+					return;
+				}
 
 				ev.Amount = 0;
 
 				if (AngerMeter > Configs.angerMeterMaximum) AngerMeter = Configs.angerMeterMaximum;
 
-				playerReferenceHub.SetAdrenalineHealth((byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth()));
+				playerReferenceHub.playerStats.unsyncedArtificialHealth = (byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth());
 
 				if (!angerMeterDecayCoroutine.IsRunning)
 				{
 					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(Configs.angerMeterDecayTime), Segment.FixedUpdate);
 				}
+			}
+			else if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
+			{
+				ev.Amount = Configs.baseDamage + (AngerMeter / Configs.angerMeterMaximum) * Configs.bonusAttackMaximum;
+
+				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(Configs.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace BetterSCP939.Components
 			AngerMeter = 0;
 
 			playerReferenceHub.SetScale(1);
-			playerReferenceHub.SetAdrenalineHealth(0);
+			playerReferenceHub.playerStats.unsyncedArtificialHealth = 0;
 
 			Destroy(this);
 		}
@@ -150,7 +150,7 @@ namespace BetterSCP939.Components
 		{
 			while (AngerMeter > 0)
 			{
-				playerReferenceHub.SetAdrenalineHealth((byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth()));
+				playerReferenceHub.playerStats.unsyncedArtificialHealth = (byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth());
 
 				yield return Timing.WaitForSeconds(waitTime);
 
