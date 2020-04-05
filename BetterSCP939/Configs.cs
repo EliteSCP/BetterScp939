@@ -34,7 +34,7 @@ namespace BetterSCP939
 			angerMeterDecayValue = Plugin.Config.GetFloat("b939_anger_meter_decay_value", 3f);
 			startingAnger = Plugin.Config.GetFloat("b939_starting_anger", 0);
 			showSpawnBroadcastMessage = Plugin.Config.GetBool("b939_show_spawn_broadcast_message");
-			spawnBroadcastMessageDuration = Plugin.Config.GetUInt("b939_spawn_broadcast_message_duration", 10);
+			spawnBroadcastMessageDuration = Plugin.Config.GetUInt("b939_spawn_broadcast_message_duration", 15);
 			spawnBroadcastMessage = Plugin.Config.GetString("b939_spawn_broadcast_message", "<size=20><color=#00FFFF>You've spawned as an upgraded version of <color=#FF0000>SCP-939</color>!\nYou're faster than humans, your <color=#FF0000>anger</color> will increase after taking damage from them.\nMore anger means more damage inflicted to humans.\nAfter <color=#FF0000>hurting</color> someone, you'll get slowed down for <color=#FF0000>{0}</color> seconds</color></size>");
 		}
 	}
