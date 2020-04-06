@@ -29,3 +29,4 @@ Put **BetterSCP939.dll** inside `%appdata%\Plugins` if you're on **Windows** or 
 | b939_show_spawn_broadcast_message | Boolean | False | If enabled, a broadcast message will be shown to SCP-939 after its spawn. |
 | b939_spawn_broadcast_message_duration | Unsigned Integer | 15 | The duration of the SCP-939 spawn broadcast message. |
 | b939_spawn_broadcast_message | String | <size=20><color=#00FFFF>You've spawned as an upgraded version of <color=#FF0000>SCP-939</color>!\nYou're faster than humans, your <color=#FF0000>anger</color> will increase after taking damage from them.\nMore anger means more damage inflicted to humans.\nAfter <color=#FF0000>hurting</color> someone, you'll get slowed down for <color=#FF0000>{0}</color> seconds</color></size> | The broadcast message that will be shown to SCP-939 after its spawn. |
+| b939_reset_anger_after_hit_slow_down | Boolean | False | If enabled, SCP-939 anger will reset after being slowed down. |
