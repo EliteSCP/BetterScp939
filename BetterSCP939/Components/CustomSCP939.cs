@@ -23,7 +23,7 @@ namespace BetterSCP939.Components
 		{
 			RegisterEvents();
 
-			playerReferenceHub = GetComponent<ReferenceHub>();
+			playerReferenceHub = gameObject.GetPlayer();
 			scp207 = playerReferenceHub.plyMovementSync._scp207;
 			sinkHole = playerReferenceHub.plyMovementSync._sinkhole;
 			excludedDamages = new List<DamageTypes.DamageType>()

@@ -8,7 +8,7 @@ namespace BetterSCP939.Events
 	{
 		public void OnSetClass(SetClassEvent ev)
 		{
-			if (ev.Player.GetNickname() == "Dedicated Server") return;
+			if (string.IsNullOrEmpty(ev.Player.GetUserId())) return;
 
 			if (ev.Role.Is939())
 			{
