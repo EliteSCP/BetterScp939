@@ -18,7 +18,7 @@ Put **BetterSCP939.dll** inside `%appdata%\Plugins` if you're on **Windows** or 
 | --- | :---: | :---: | --- |
 | b939_enabled | Boolean | True | Enable/Disable the plugin. |
 | b939_size | Float | 0.75 | The size of SCP-939. |
-| b939_slow_amount | Float | 10 | How much SCP-939 will be slowed down after hurting someone (higher is faster). |
+| b939_slow_amount | Float | 10 | How much SCP-939 will be slowed down after hurting someone (higher is slower). |
 | b939_force_slow_down_time | Float | 3 | For how many seconds SCP-939 will be slowed down after hurting someone. |
 | b939_base_damage | Float | 40 | The base damage that SCP-939 will inflict. |
 | b939_bonus_attack_maximum | Float | 150 | The maximum amount of bonus attack that SCP-939 can inflict. |
