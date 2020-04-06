@@ -112,6 +112,8 @@ namespace BetterSCP939.Components
 		{
 			PartiallyDestroy();
 
+			if (playerReferenceHub == null) return;
+
 			scp207.ServerDisable();
 			sinkHole.ServerDisable();
 
@@ -153,6 +155,8 @@ namespace BetterSCP939.Components
 			}
 
 			sinkHole.ServerDisable();
+
+			if (Configs.resetAngerAfterHitSlowDown) AngerMeter = playerReferenceHub.playerStats.unsyncedArtificialHealth = 0;
 		}
 
 		private IEnumerator<float> AngerMeterDecay(float waitTime)

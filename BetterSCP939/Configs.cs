@@ -17,6 +17,7 @@ namespace BetterSCP939
 		public static bool showSpawnBroadcastMessage;
 		public static uint spawnBroadcastMessageDuration;
 		public static string spawnBroadcastMessage;
+		public static bool resetAngerAfterHitSlowDown;
 
 		/// <summary>
 		/// Reloads plugin configs.
@@ -36,6 +37,7 @@ namespace BetterSCP939
 			showSpawnBroadcastMessage = Plugin.Config.GetBool("b939_show_spawn_broadcast_message");
 			spawnBroadcastMessageDuration = Plugin.Config.GetUInt("b939_spawn_broadcast_message_duration", 15);
 			spawnBroadcastMessage = Plugin.Config.GetString("b939_spawn_broadcast_message", "<size=20><color=#00FFFF>You've spawned as an upgraded version of <color=#FF0000>SCP-939</color>!\nYou're faster than humans, your <color=#FF0000>anger</color> will increase after taking damage from them.\nMore anger means more damage inflicted to humans.\nAfter <color=#FF0000>hurting</color> someone, you'll get slowed down for <color=#FF0000>{0}</color> seconds</color></size>");
+			resetAngerAfterHitSlowDown = Plugin.Config.GetBool("b939_reset_anger_after_hit_slow_down");
 		}
 	}
 }

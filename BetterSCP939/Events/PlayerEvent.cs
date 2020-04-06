@@ -12,9 +12,7 @@ namespace BetterSCP939.Events
 
 			if (ev.Role.Is939())
 			{
-				var betterSCP939 = ev.Player.gameObject.GetComponent<CustomSCP939>();
-
-				if (betterSCP939 != null) betterSCP939.Destroy();
+				if (ev.Player.TryGetComponent(out CustomSCP939 customSCP939)) customSCP939.Destroy();
 
 				ev.Player.gameObject.AddComponent<CustomSCP939>();
 
