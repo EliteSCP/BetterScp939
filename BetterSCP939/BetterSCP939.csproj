@@ -65,10 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BetterSCP939.cs" />
+    <Compile Include="BetterScp939.cs" />
     <Compile Include="Configs.cs" />
-    <Compile Include="Events\PlayerEvent.cs" />
-    <Compile Include="Components\CustomSCP939.cs" />
+    <Compile Include="Events\PlayerHandler.cs" />
+    <Compile Include="Components\CustomScp939.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

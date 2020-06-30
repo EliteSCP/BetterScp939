@@ -1,19 +1,21 @@
-﻿using BetterSCP939.Components;
-using BetterSCP939.Events;
+﻿using BetterScp939.Components;
+using BetterScp939.Events;
 using EXILED;
 using EXILED.Extensions;
 using System;
 using System.Reflection;
 
-namespace BetterSCP939
+namespace BetterScp939
 {
-	public class BetterSCP939 : Plugin
+    public class BetterScp939 : Plugin
 	{
-		internal PlayerEvent PlayerEvent { get; set; }
-		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 9, Patch = 10 };
+		internal PlayerHandler PlayerHandler { get; set; }
+		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 12, Patch = 24 };
 		internal Version Version { get; private set; } = Assembly.GetExecutingAssembly().GetName().Version;
 
-		public override string getName => $"BetterSCP939 {Version.Major}.{Version.Minor}.{Version.Build}";
+		public override string getName { get; }
+
+		public BetterScp939() => getName = $"BetterSCP939 {Version.Major}.{Version.Minor}.{Version.Build}";
 
 		public override void OnEnable()
 		{
@@ -37,7 +39,7 @@ namespace BetterSCP939
 
 			foreach (var player in Team.SCP.GetHubs())
 			{
-				if (player.TryGetComponent<CustomSCP939>(out var customSCP939)) customSCP939.Destroy();
+				if (player.TryGetComponent<CustomScp939>(out var customSCP939)) customSCP939.Destroy();
 			}
 
 			Log.Info($"{getName} has been disabled!");
@@ -47,16 +49,16 @@ namespace BetterSCP939
 
 		internal void RegisterEvents()
 		{
-			PlayerEvent = new PlayerEvent();
+			PlayerHandler = new PlayerHandler();
 
-			EXILED.Events.SetClassEvent += PlayerEvent.OnSetClass;
+			EXILED.Events.SetClassEvent += PlayerHandler.OnSetClass;
 		}
 
 		internal void UnregisterEvents()
 		{
-			EXILED.Events.SetClassEvent -= PlayerEvent.OnSetClass;
+			EXILED.Events.SetClassEvent -= PlayerHandler.OnSetClass;
 
-			PlayerEvent = null;
+			PlayerHandler = null;
 		}
 	}
 }

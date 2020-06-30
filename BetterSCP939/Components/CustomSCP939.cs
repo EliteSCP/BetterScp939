@@ -2,12 +2,13 @@
 using EXILED;
 using EXILED.Extensions;
 using MEC;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BetterSCP939.Components
+namespace BetterScp939.Components
 {
-	public class CustomSCP939 : MonoBehaviour
+	public class CustomScp939 : MonoBehaviour
 	{
 		private ReferenceHub playerReferenceHub;
 		private Scp207 scp207;
@@ -24,8 +25,8 @@ namespace BetterSCP939.Components
 			RegisterEvents();
 
 			playerReferenceHub = gameObject.GetPlayer();
-			scp207 = playerReferenceHub.plyMovementSync._scp207;
-			sinkHole = playerReferenceHub.plyMovementSync._sinkhole;
+			scp207 = playerReferenceHub.playerMovementSync._scp207;
+			sinkHole = playerReferenceHub.playerMovementSync._sinkhole;
 			excludedDamages = new List<DamageTypes.DamageType>()
 			{
 				DamageTypes.Tesla,
@@ -61,8 +62,9 @@ namespace BetterSCP939.Components
 				return;
 			}
 
-			if (!scp207.Enabled && !sinkHole.Enabled) scp207.ServerEnable();
+			if (!scp207.Enabled && !sinkHole.Enabled) playerReferenceHub.playerEffectsController.EnableEffect<Scp207>();
 		}
+
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
 			if (ev.Player == playerReferenceHub)
@@ -95,22 +97,12 @@ namespace BetterSCP939.Components
 			}
 		}
 
-		public void OnPlayerLeave(PlayerLeaveEvent ev)
-		{
-			if (ev.Player == playerReferenceHub) PartiallyDestroy();
-		}
-
-		public void OnRoundRestart() => PartiallyDestroy();
+		private void OnDestroy() => PartiallyDestroy();
 
 		public void PartiallyDestroy()
 		{
 			UnregisterEvents();
 			KillCoroutines();
-		}
-
-		public void Destroy()
-		{
-			PartiallyDestroy();
 
 			if (playerReferenceHub == null) return;
 
@@ -121,23 +113,23 @@ namespace BetterSCP939.Components
 
 			playerReferenceHub.SetScale(1);
 			playerReferenceHub.playerStats.unsyncedArtificialHealth = 0;
-
-			Destroy(this);
 		}
 
-		private void RegisterEvents()
+		public void Destroy()
 		{
-			EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
-			EXILED.Events.PlayerLeaveEvent += OnPlayerLeave;
-			EXILED.Events.RoundRestartEvent += OnRoundRestart;
+			try
+			{
+				Destroy(this);
+			}
+			catch (Exception exception)
+			{
+				Log.Error($"Cannot destroy, IsReferenceHubNull: {playerReferenceHub == null} Error: {exception}");
+			}
 		}
 
-		private void UnregisterEvents()
-		{
-			EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
-			EXILED.Events.PlayerLeaveEvent -= OnPlayerLeave;
-			EXILED.Events.RoundRestartEvent -= OnRoundRestart;
-		}
+		private void RegisterEvents() => EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
+
+		private void UnregisterEvents() => EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
 
 		private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
 		{
@@ -147,7 +139,7 @@ namespace BetterSCP939.Components
 
 			while (waitedTime < totalWaitTime)
 			{
-				if (!sinkHole.Enabled) sinkHole.ServerEnable();
+				if (!sinkHole.Enabled) playerReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
 
 				waitedTime += interval;
 
