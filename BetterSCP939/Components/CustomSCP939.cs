@@ -9,7 +9,7 @@ using UnityEngine;
 namespace BetterScp939.Components
 {
 	public class CustomScp939 : MonoBehaviour
-	{ 
+	{
 		private ReferenceHub playerReferenceHub;
 		private Scp207 scp207;
 		private SinkHole sinkHole;
