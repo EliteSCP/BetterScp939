@@ -7,8 +7,8 @@
     <ProjectGuid>{70D66A9A-3E32-4CA4-9E0D-0F0141AE997F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BetterSCP939</RootNamespace>
-    <AssemblyName>BetterSCP939</AssemblyName>
+    <RootNamespace>BetterScp939</RootNamespace>
+    <AssemblyName>BetterScp939</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
