@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace BetterScp939.Components
 {
-	public class CustomScp939 : MonoBehaviour
+    public class CustomScp939 : MonoBehaviour
 	{
 		private ReferenceHub playerReferenceHub;
 		private Scp207 scp207;
@@ -22,11 +22,11 @@ namespace BetterScp939.Components
 
 		private void Awake()
 		{
-			RegisterEvents();
+            RegisterEvents();
 
 			playerReferenceHub = gameObject.GetPlayer();
-			scp207 = playerReferenceHub.playerMovementSync._scp207;
-			sinkHole = playerReferenceHub.playerMovementSync._sinkhole;
+			scp207 = playerReferenceHub.playerEffectsController.GetEffect<Scp207>();
+			sinkHole = playerReferenceHub.playerEffectsController.GetEffect<SinkHole>();
 			excludedDamages = new List<DamageTypes.DamageType>()
 			{
 				DamageTypes.Tesla,
@@ -56,7 +56,7 @@ namespace BetterScp939.Components
 
 		private void Update()
 		{
-			if (playerReferenceHub == null || !playerReferenceHub.GetRole().Is939())
+            if (playerReferenceHub == null || !playerReferenceHub.GetRole().Is939())
 			{
 				Destroy();
 				return;

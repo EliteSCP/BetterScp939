@@ -12,11 +12,11 @@ namespace BetterScp939.Events
 
 			if (ev.Role.Is939())
 			{
-				if (ev.Player.TryGetComponent(out CustomScp939 customSCP939)) customSCP939.Destroy();
+				if (ev.Player.TryGetComponent(out CustomScp939 customScp939)) customScp939.Destroy();
 
 				ev.Player.gameObject.AddComponent<CustomScp939>();
 
-				return;
+                return;
 			}
 		}
 	}
