@@ -10,7 +10,7 @@ namespace BetterScp939
     public class BetterScp939 : Plugin
 	{
 		internal PlayerHandler PlayerHandler { get; set; }
-		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 12, Patch = 24 };
+		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 12, Patch = 26 };
 		internal Version Version { get; private set; } = Assembly.GetExecutingAssembly().GetName().Version;
 
 		public override string getName { get; }
