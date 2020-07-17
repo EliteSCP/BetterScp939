@@ -40,18 +40,18 @@ namespace BetterScp939.Components
 				DamageTypes.Scp207,
 				DamageTypes.None
 			};
-			AngerMeter = BetterScp939.singleton.Config.StartingAnger;
-			sinkHole.slowAmount = BetterScp939.singleton.Config.SlowAmount;
+			AngerMeter = BetterScp939.Instance.Config.StartingAnger;
+			sinkHole.slowAmount = BetterScp939.Instance.Config.SlowAmount;
 		}
 
 		private void Start()
 		{
-			player.Scale *= BetterScp939.singleton.Config.Size;
+			player.Scale *= BetterScp939.Instance.Config.Size;
 
-			if (BetterScp939.singleton.Config.ShowSpawnBroadcastMessage)
+			if (BetterScp939.Instance.Config.ShowSpawnBroadcastMessage)
 			{
 				player.ClearBroadcasts();
-				player.Broadcast(BetterScp939.singleton.Config.SpawnBroadcastMessageDuration, string.Format(BetterScp939.singleton.Config.SpawnBroadcastMessage, BetterScp939.singleton.Config.ForceSlowDownTime));
+				player.Broadcast(BetterScp939.Instance.Config.SpawnBroadcastMessageDuration, string.Format(BetterScp939.Instance.Config.SpawnBroadcastMessage, BetterScp939.Instance.Config.ForceSlowDownTime));
 			}
 		}
 
@@ -81,20 +81,20 @@ namespace BetterScp939.Components
 
 				ev.Amount = 0;
 
-				if (AngerMeter > BetterScp939.singleton.Config.AngerMeterMaximum) AngerMeter = BetterScp939.singleton.Config.AngerMeterMaximum;
+				if (AngerMeter > BetterScp939.Instance.Config.AngerMeterMaximum) AngerMeter = BetterScp939.Instance.Config.AngerMeterMaximum;
 
-				player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
+				player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
 
 				if (!angerMeterDecayCoroutine.IsRunning)
 				{
-					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterScp939.singleton.Config.AngerMeterDecayTime), Segment.FixedUpdate);
+					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterScp939.Instance.Config.AngerMeterDecayTime), Segment.FixedUpdate);
 				}
 			}
 			else if (ev.Attacker == player && ev.Amount > 0)
 			{
-				ev.Amount = BetterScp939.singleton.Config.BaseDamage + (AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum) * BetterScp939.singleton.Config.BonusAttackMaximum;
+				ev.Amount = BetterScp939.Instance.Config.BaseDamage + (AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum) * BetterScp939.Instance.Config.BonusAttackMaximum;
 
-				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterScp939.singleton.Config.ForceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
+				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterScp939.Instance.Config.ForceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace BetterScp939.Components
 
 			sinkHole.ServerDisable();
 
-			if (BetterScp939.singleton.Config.ResetAngerAfterHitSlowDown) 
+			if (BetterScp939.Instance.Config.ResetAngerAfterHitSlowDown) 
 				AngerMeter = player.AdrenalineHealth = 0;
 		}
 
@@ -157,11 +157,11 @@ namespace BetterScp939.Components
 		{
 			while (AngerMeter > 0)
 			{
-				player.AdrenalineHealth= (byte)(AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
+				player.AdrenalineHealth= (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
 
 				yield return Timing.WaitForSeconds(waitTime);
 
-				AngerMeter -= BetterScp939.singleton.Config.AngerMeterDecayValue;
+				AngerMeter -= BetterScp939.Instance.Config.AngerMeterDecayValue;
 
 				if (AngerMeter < 0) AngerMeter = 0;
 			}

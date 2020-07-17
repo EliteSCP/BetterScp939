@@ -2,29 +2,24 @@
 using BetterScp939.Events;
 using System;
 using System.Linq;
-using System.Reflection;
 using Exiled.API.Features;
 using PlayerEvents = Exiled.Events.Handlers.Player;
 
 namespace BetterScp939
 {
-    public class BetterScp939 : Plugin<Configs>
+    public class BetterScp939 : Plugin<Config>
 	{
+		private static readonly Lazy<BetterScp939> LazyInstance = new Lazy<BetterScp939>(() => new BetterScp939());
+
 		internal PlayerHandler PlayerHandler { get; set; }
-		public static BetterScp939 singleton;
 
-		public override string Author { get; } = "iopietro";
-		public override Version Version { get; } = Assembly.GetExecutingAssembly().GetName().Version;
-		public override Version RequiredExiledVersion { get; } = new Version(2, 0, 1);
-		public override string Prefix { get; } = "B939";
-		public override string Name { get; } = "Better SCP-939";
+		public static BetterScp939 Instance => LazyInstance.Value;
 
-		public override void OnEnabled()
-		{
-			singleton = this;
+		private BetterScp939()
+        {
+        }
 
-			RegisterEvents();
-		}
+		public override void OnEnabled() => RegisterEvents();
 
 		public override void OnDisabled()
 		{
