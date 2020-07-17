@@ -1,22 +1,21 @@
 ﻿using BetterScp939.Components;
-using EXILED;
-using EXILED.Extensions;
+using Exiled.Events.EventArgs;
 
 namespace BetterScp939.Events
 {
 	public class PlayerHandler
 	{
-		public void OnSetClass(SetClassEvent ev)
+		public void OnSetClass(ChangingRoleEventArgs ev)
 		{
-			if (string.IsNullOrEmpty(ev.Player?.GetUserId())) return;
+			if (string.IsNullOrEmpty(ev.Player?.UserId)) 
+				return;
 
-			if (ev.Role.Is939())
+			if (ev.NewRole.Is939())
 			{
-				if (ev.Player.TryGetComponent(out CustomScp939 customScp939)) customScp939.Destroy();
+				if (ev.Player.ReferenceHub.TryGetComponent(out CustomScp939 customScp939)) 
+					customScp939.Destroy();
 
-				ev.Player.gameObject.AddComponent<CustomScp939>();
-
-                return;
+				ev.Player.ReferenceHub.gameObject.AddComponent<CustomScp939>();
 			}
 		}
 	}

@@ -1,62 +1,52 @@
 ﻿using BetterScp939.Components;
 using BetterScp939.Events;
-using EXILED;
-using EXILED.Extensions;
 using System;
+using System.Linq;
 using System.Reflection;
+using Exiled.API.Features;
+using PlayerEvents = Exiled.Events.Handlers.Player;
 
 namespace BetterScp939
 {
-    public class BetterScp939 : Plugin
+    public class BetterScp939 : Plugin<Configs>
 	{
 		internal PlayerHandler PlayerHandler { get; set; }
-		internal ExiledVersion ExiledVersion { get; private set; } = new ExiledVersion() { Major = 1, Minor = 12, Patch = 26 };
-		internal Version Version { get; private set; } = Assembly.GetExecutingAssembly().GetName().Version;
+		public static BetterScp939 singleton;
 
-		public override string getName { get; }
+		public override string Author { get; } = "iopietro";
+		public override Version Version { get; } = Assembly.GetExecutingAssembly().GetName().Version;
+		public override Version RequiredExiledVersion { get; } = new Version(2, 0, 1);
+		public override string Prefix { get; } = "B939";
+		public override string Name { get; } = "Better SCP-939";
 
-		public BetterScp939() => getName = $"BetterSCP939 {Version.Major}.{Version.Minor}.{Version.Build}";
-
-		public override void OnEnable()
+		public override void OnEnabled()
 		{
-			if (Version.Parse($"{EventPlugin.Version.Major}.{EventPlugin.Version.Minor}.{EventPlugin.Version.Patch}") < Version.Parse($"{ExiledVersion.Major}.{ExiledVersion.Minor}.{ExiledVersion.Patch}"))
-			{
-				Log.Warn($"You're running an older version of EXILED ({EventPlugin.Version.Major}.{EventPlugin.Version.Minor}.{EventPlugin.Version.Patch}), the plugin may not be compatible with it! Recommended version: {ExiledVersion.Major}.{ExiledVersion.Minor}.{ExiledVersion.Patch}");
-			}
-
-			Configs.Reload();
-
-			if (!Configs.isEnabled) return;
+			singleton = this;
 
 			RegisterEvents();
-
-			Log.Info($"{getName} has been enabled!");
 		}
 
-		public override void OnDisable()
+		public override void OnDisabled()
 		{
 			UnregisterEvents();
 
-			foreach (var player in Team.SCP.GetHubs())
+			foreach (var player in Player.List.Where(p => p.Team == Team.SCP))
 			{
-				if (player.TryGetComponent<CustomScp939>(out var customSCP939)) customSCP939.Destroy();
+				if (player.ReferenceHub.TryGetComponent<CustomScp939>(out var customScp939)) 
+					customScp939.Destroy();
 			}
-
-			Log.Info($"{getName} has been disabled!");
 		}
-
-		public override void OnReload() => Log.Info($"{getName} has been reloaded!");
 
 		internal void RegisterEvents()
 		{
 			PlayerHandler = new PlayerHandler();
 
-			EXILED.Events.SetClassEvent += PlayerHandler.OnSetClass;
+			PlayerEvents.ChangingRole += PlayerHandler.OnSetClass;
 		}
 
 		internal void UnregisterEvents()
 		{
-			EXILED.Events.SetClassEvent -= PlayerHandler.OnSetClass;
+			PlayerEvents.ChangingRole -= PlayerHandler.OnSetClass;
 
 			PlayerHandler = null;
 		}

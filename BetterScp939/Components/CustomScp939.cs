@@ -1,16 +1,17 @@
 ﻿using CustomPlayerEffects;
-using EXILED;
-using EXILED.Extensions;
 using MEC;
 using System;
 using System.Collections.Generic;
+using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using UnityEngine;
+using PlayerEvents = Exiled.Events.Handlers.Player;
 
 namespace BetterScp939.Components
 {
     public class CustomScp939 : MonoBehaviour
 	{
-		private ReferenceHub playerReferenceHub;
+		private Player player;
 		private Scp207 scp207;
 		private SinkHole sinkHole;
 		private List<DamageTypes.DamageType> excludedDamages;
@@ -24,9 +25,9 @@ namespace BetterScp939.Components
 		{
             RegisterEvents();
 
-			playerReferenceHub = gameObject.GetPlayer();
-			scp207 = playerReferenceHub.playerEffectsController.GetEffect<Scp207>();
-			sinkHole = playerReferenceHub.playerEffectsController.GetEffect<SinkHole>();
+			player = Player.Get(gameObject);
+			scp207 = player.ReferenceHub.playerEffectsController.GetEffect<Scp207>();
+			sinkHole = player.ReferenceHub.playerEffectsController.GetEffect<SinkHole>();
 			excludedDamages = new List<DamageTypes.DamageType>()
 			{
 				DamageTypes.Tesla,
@@ -39,37 +40,37 @@ namespace BetterScp939.Components
 				DamageTypes.Scp207,
 				DamageTypes.None
 			};
-			AngerMeter = Configs.startingAnger;
-			sinkHole.slowAmount = Configs.slowAmount;
+			AngerMeter = BetterScp939.singleton.Config.StartingAnger;
+			sinkHole.slowAmount = BetterScp939.singleton.Config.SlowAmount;
 		}
 
 		private void Start()
 		{
-			playerReferenceHub.SetScale(Configs.size);
+			player.Scale *= BetterScp939.singleton.Config.Size;
 
-			if (Configs.showSpawnBroadcastMessage)
+			if (BetterScp939.singleton.Config.ShowSpawnBroadcastMessage)
 			{
-				playerReferenceHub.ClearBroadcasts();
-				playerReferenceHub.Broadcast(Configs.spawnBroadcastMessageDuration, string.Format(Configs.spawnBroadcastMessage, Configs.forceSlowDownTime), false);
+				player.ClearBroadcasts();
+				player.Broadcast(BetterScp939.singleton.Config.SpawnBroadcastMessageDuration, string.Format(BetterScp939.singleton.Config.SpawnBroadcastMessage, BetterScp939.singleton.Config.ForceSlowDownTime));
 			}
 		}
 
 		private void Update()
 		{
-            if (playerReferenceHub == null || !playerReferenceHub.GetRole().Is939())
+            if (player == null || !player.Role.Is939())
 			{
 				Destroy();
 				return;
 			}
 
-			if (!scp207.Enabled && !sinkHole.Enabled) playerReferenceHub.playerEffectsController.EnableEffect<Scp207>();
+			if (!scp207.Enabled && !sinkHole.Enabled) player.ReferenceHub.playerEffectsController.EnableEffect<Scp207>();
 		}
 
-		public void OnPlayerHurt(ref PlayerHurtEvent ev)
+		public void OnPlayerHurt(HurtingEventArgs ev)
 		{
-			if (ev.Player == playerReferenceHub)
+			if (ev.Target == player)
 			{
-				if (ev.DamageType != DamageTypes.Scp207) playerReferenceHub.AddHealth(ev.Amount < 0 ? -9999999f : -ev.Amount);
+				if (ev.DamageType != DamageTypes.Scp207) player.Health += ev.Amount < 0 ? -9999999f : -ev.Amount;
 
 				if (!excludedDamages.Contains(ev.DamageType)) AngerMeter += ev.Amount;
 				else
@@ -80,20 +81,20 @@ namespace BetterScp939.Components
 
 				ev.Amount = 0;
 
-				if (AngerMeter > Configs.angerMeterMaximum) AngerMeter = Configs.angerMeterMaximum;
+				if (AngerMeter > BetterScp939.singleton.Config.AngerMeterMaximum) AngerMeter = BetterScp939.singleton.Config.AngerMeterMaximum;
 
-				playerReferenceHub.playerStats.unsyncedArtificialHealth = (byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth());
+				player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
 
 				if (!angerMeterDecayCoroutine.IsRunning)
 				{
-					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(Configs.angerMeterDecayTime), Segment.FixedUpdate);
+					angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterScp939.singleton.Config.AngerMeterDecayTime), Segment.FixedUpdate);
 				}
 			}
-			else if (ev.Attacker == playerReferenceHub && ev.Amount > 0)
+			else if (ev.Attacker == player && ev.Amount > 0)
 			{
-				ev.Amount = Configs.baseDamage + (AngerMeter / Configs.angerMeterMaximum) * Configs.bonusAttackMaximum;
+				ev.Amount = BetterScp939.singleton.Config.BaseDamage + (AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum) * BetterScp939.singleton.Config.BonusAttackMaximum;
 
-				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(Configs.forceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
+				forceSlowDownCoroutine = Timing.RunCoroutine(ForceSlowDown(BetterScp939.singleton.Config.ForceSlowDownTime, forceSlowDownInterval), Segment.FixedUpdate);
 			}
 		}
 
@@ -104,15 +105,15 @@ namespace BetterScp939.Components
 			UnregisterEvents();
 			KillCoroutines();
 
-			if (playerReferenceHub == null) return;
+			if (player == null) return;
 
 			scp207.ServerDisable();
 			sinkHole.ServerDisable();
 
 			AngerMeter = 0;
 
-			playerReferenceHub.SetScale(1);
-			playerReferenceHub.playerStats.unsyncedArtificialHealth = 0;
+			player.Scale = new Vector3(1, 1, 1);
+			player.AdrenalineHealth = 0;
 		}
 
 		public void Destroy()
@@ -123,13 +124,13 @@ namespace BetterScp939.Components
 			}
 			catch (Exception exception)
 			{
-				Log.Error($"Cannot destroy, IsReferenceHubNull: {playerReferenceHub == null} Error: {exception}");
+				Log.Error($"Cannot destroy, IsReferenceHubNull: {player == null} Error: {exception}");
 			}
 		}
 
-		private void RegisterEvents() => EXILED.Events.PlayerHurtEvent += OnPlayerHurt;
+		private void RegisterEvents() => PlayerEvents.Hurting += OnPlayerHurt;
 
-		private void UnregisterEvents() => EXILED.Events.PlayerHurtEvent -= OnPlayerHurt;
+		private void UnregisterEvents() => PlayerEvents.Hurting -= OnPlayerHurt;
 
 		private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
 		{
@@ -139,7 +140,7 @@ namespace BetterScp939.Components
 
 			while (waitedTime < totalWaitTime)
 			{
-				if (!sinkHole.Enabled) playerReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
+				if (!sinkHole.Enabled) player.ReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
 
 				waitedTime += interval;
 
@@ -148,18 +149,19 @@ namespace BetterScp939.Components
 
 			sinkHole.ServerDisable();
 
-			if (Configs.resetAngerAfterHitSlowDown) AngerMeter = playerReferenceHub.playerStats.unsyncedArtificialHealth = 0;
+			if (BetterScp939.singleton.Config.ResetAngerAfterHitSlowDown) 
+				AngerMeter = player.AdrenalineHealth = 0;
 		}
 
 		private IEnumerator<float> AngerMeterDecay(float waitTime)
 		{
 			while (AngerMeter > 0)
 			{
-				playerReferenceHub.playerStats.unsyncedArtificialHealth = (byte)(AngerMeter / Configs.angerMeterMaximum * playerReferenceHub.GetMaxAdrenalineHealth());
+				player.AdrenalineHealth= (byte)(AngerMeter / BetterScp939.singleton.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
 
 				yield return Timing.WaitForSeconds(waitTime);
 
-				AngerMeter -= Configs.angerMeterDecayValue;
+				AngerMeter -= BetterScp939.singleton.Config.AngerMeterDecayValue;
 
 				if (AngerMeter < 0) AngerMeter = 0;
 			}
