@@ -8,6 +8,9 @@ namespace BetterScp939
 		[Description("Whether or not the plugin is enabled.")]
 		public bool IsEnabled { get; set; } = true;
 
+		[Description("If 939 should be faster that a human's sprint.")]
+		public bool FasterThanHumans { get; set; } = true;
+
 		[Description("The size multiplier for 939.")]
 		public float Size { get; set; } = 0.74f;
 

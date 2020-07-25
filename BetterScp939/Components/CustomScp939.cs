@@ -63,7 +63,7 @@ namespace BetterScp939.Components
 				return;
 			}
 
-			if (!scp207.Enabled && !sinkHole.Enabled) player.ReferenceHub.playerEffectsController.EnableEffect<Scp207>();
+			if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.FasterThanHumans) player.ReferenceHub.playerEffectsController.EnableEffect<Scp207>();
 		}
 
 		public void OnPlayerHurt(HurtingEventArgs ev)
