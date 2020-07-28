@@ -11,6 +11,9 @@ namespace BetterScp939
 		[Description("If 939 should be faster that a human's sprint.")]
 		public bool FasterThanHumans { get; set; } = true;
 
+		[Description("If 939 should get slowed down after biting someone.")]
+		public bool ShouldGetSlowed { get; set; } = true;
+
 		[Description("The size multiplier for 939.")]
 		public float Size { get; set; } = 0.74f;
 
