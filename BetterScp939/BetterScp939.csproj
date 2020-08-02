@@ -35,7 +35,7 @@
     <Compile Include="BetterScp939.cs" />
     <Compile Include="Configs.cs" />
     <Compile Include="Events\PlayerHandler.cs" />
-    <Compile Include="Components\CustomScp939.cs" />
+    <Compile Include="Components\BetterScp939Controller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
