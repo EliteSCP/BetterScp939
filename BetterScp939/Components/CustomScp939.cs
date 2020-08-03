@@ -140,7 +140,7 @@ namespace BetterScp939.Components
 
 			while (waitedTime < totalWaitTime)
 			{
-				if (!sinkHole.Enabled) player.ReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
+				if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) player.ReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
 
 				waitedTime += interval;
 
