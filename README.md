@@ -1,4 +1,4 @@
-# BetterSCP939
+# BetterScp939
 An **upgraded** version of the already existing **SCP-939**.
 
 **SCP-939** size has been **reduced by 25%**, it's **faster than humans** and will get **slowed down** after hurting someone.
