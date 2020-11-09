@@ -124,7 +124,7 @@
             }
             catch (Exception exception)
             {
-                Log.Error($"Cannot destroy, IsReferenceHubNull: {player == null} Error: {exception}");
+                Log.Error($"Cannot destroy, IsPlayerNull: {player == null} Error: {exception}");
             }
         }
 
