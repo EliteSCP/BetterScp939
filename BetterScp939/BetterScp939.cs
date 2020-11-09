@@ -1,12 +1,11 @@
-﻿using BetterScp939.Components;
-using BetterScp939.Events;
-using Exiled.API.Features;
-using System;
-using System.Linq;
-using PlayerEvents = Exiled.Events.Handlers.Player;
-
-namespace BetterScp939
+﻿namespace BetterScp939
 {
+    using Components;
+    using Events;
+    using Exiled.API.Features;
+    using System;
+    using System.Linq;
+    using PlayerEvents = Exiled.Events.Handlers.Player;
     public class BetterScp939 : Plugin<Config>
     {
         private static readonly Lazy<BetterScp939> LazyInstance = new Lazy<BetterScp939>(() => new BetterScp939());

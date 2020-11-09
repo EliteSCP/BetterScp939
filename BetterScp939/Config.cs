@@ -1,8 +1,8 @@
-using Exiled.API.Interfaces;
-using System.ComponentModel;
-
 namespace BetterScp939
 {
+    using Exiled.API.Interfaces;
+    using System.ComponentModel;
+
     public class Config : IConfig
     {
         [Description("Whether or not the plugin is enabled.")]

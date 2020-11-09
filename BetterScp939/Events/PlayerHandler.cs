@@ -1,8 +1,8 @@
-﻿using BetterScp939.Components;
-using Exiled.Events.EventArgs;
-
-namespace BetterScp939.Events
+﻿namespace BetterScp939.Events
 {
+    using Components;
+    using Exiled.Events.EventArgs;
+
     public class PlayerHandler
     {
         public void OnSetClass(ChangingRoleEventArgs ev)

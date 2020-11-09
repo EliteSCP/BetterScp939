@@ -1,14 +1,14 @@
-﻿using CustomPlayerEffects;
-using Exiled.API.Features;
-using Exiled.Events.EventArgs;
-using MEC;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using PlayerEvents = Exiled.Events.Handlers.Player;
-
-namespace BetterScp939.Components
+﻿namespace BetterScp939.Components
 {
+    using CustomPlayerEffects;
+    using Exiled.API.Features;
+    using Exiled.Events.EventArgs;
+    using MEC;
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using PlayerEvents = Exiled.Events.Handlers.Player;
+
     public class BetterScp939Controller : MonoBehaviour
     {
         private Player player;
