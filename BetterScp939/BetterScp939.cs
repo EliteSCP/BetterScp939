@@ -4,8 +4,8 @@
     using Events;
     using Exiled.API.Features;
     using System;
-    using System.Linq;
     using PlayerEvents = Exiled.Events.Handlers.Player;
+
     public class BetterScp939 : Plugin<Config>
     {
         private static readonly Lazy<BetterScp939> LazyInstance = new Lazy<BetterScp939>(() => new BetterScp939());
@@ -24,7 +24,7 @@
         {
             UnregisterEvents();
 
-            foreach (var player in Player.List.Where(p => p.Team == Team.SCP))
+            foreach (var player in Player.Get(Team.SCP))
             {
                 if (player.ReferenceHub.TryGetComponent<BetterScp939Controller>(out var customScp939))
                     customScp939.Destroy();

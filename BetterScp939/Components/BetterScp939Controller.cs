@@ -63,7 +63,7 @@
                 return;
             }
 
-            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans) player.ReferenceHub.playerEffectsController.EnableEffect<Scp207>();
+            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans) player.EnableEffect<Scp207>();
         }
 
         public void OnPlayerHurt(HurtingEventArgs ev)
@@ -140,7 +140,7 @@
 
             while (waitedTime < totalWaitTime)
             {
-                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) player.ReferenceHub.playerEffectsController.EnableEffect<SinkHole>();
+                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) player.EnableEffect<SinkHole>();
 
                 waitedTime += interval;
 

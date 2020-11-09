@@ -7,7 +7,7 @@
     {
         public void OnSetClass(ChangingRoleEventArgs ev)
         {
-            if (string.IsNullOrEmpty(ev.Player?.UserId))
+            if (ev.Player?.IsHost ?? true)
                 return;
 
             if (ev.NewRole.Is939())
