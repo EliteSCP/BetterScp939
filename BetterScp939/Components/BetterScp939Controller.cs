@@ -67,7 +67,7 @@
                 player.EnableEffect<Scp207>();
         }
 
-        public void OnPlayerHurt(HurtingEventArgs ev)
+        public void OnHurting(HurtingEventArgs ev)
         {
             if (ev.Target == player)
             {
@@ -133,9 +133,9 @@
             }
         }
 
-        private void RegisterEvents() => PlayerEvents.Hurting += OnPlayerHurt;
+        private void RegisterEvents() => PlayerEvents.Hurting += OnHurting;
 
-        private void UnregisterEvents() => PlayerEvents.Hurting -= OnPlayerHurt;
+        private void UnregisterEvents() => PlayerEvents.Hurting -= OnHurting;
 
         private IEnumerator<float> ForceSlowDown(float totalWaitTime, float interval)
         {
