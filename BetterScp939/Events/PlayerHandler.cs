@@ -12,10 +12,10 @@
 
             if (ev.NewRole.Is939())
             {
-                if (ev.Player.ReferenceHub.TryGetComponent(out BetterScp939Controller customScp939))
+                if (ev.Player.GameObject.TryGetComponent(out BetterScp939Controller customScp939))
                     customScp939.Destroy();
 
-                ev.Player.ReferenceHub.gameObject.AddComponent<BetterScp939Controller>();
+                ev.Player.GameObject.AddComponent<BetterScp939Controller>();
             }
         }
     }

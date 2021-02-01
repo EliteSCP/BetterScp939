@@ -63,16 +63,21 @@
                 return;
             }
 
-            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans) player.EnableEffect<Scp207>();
+            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans) 
+                player.EnableEffect<Scp207>();
         }
 
         public void OnPlayerHurt(HurtingEventArgs ev)
         {
             if (ev.Target == player)
             {
-                if (ev.DamageType != DamageTypes.Scp207) player.Health += ev.Amount < 0 ? -9999999f : -ev.Amount;
+                if (ev.DamageType != DamageTypes.Scp207)
+                    player.Health += ev.Amount < 0 ? -9999999f : -ev.Amount;
 
-                if (!excludedDamages.Contains(ev.DamageType)) AngerMeter += ev.Amount;
+                if (!excludedDamages.Contains(ev.DamageType))
+                {
+                    AngerMeter += ev.Amount;
+                }
                 else
                 {
                     ev.Amount = 0;
@@ -81,14 +86,13 @@
 
                 ev.Amount = 0;
 
-                if (AngerMeter > BetterScp939.Instance.Config.AngerMeterMaximum) AngerMeter = BetterScp939.Instance.Config.AngerMeterMaximum;
+                if (AngerMeter > BetterScp939.Instance.Config.AngerMeterMaximum)
+                    AngerMeter = BetterScp939.Instance.Config.AngerMeterMaximum;
 
                 player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
 
                 if (!angerMeterDecayCoroutine.IsRunning)
-                {
                     angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterScp939.Instance.Config.AngerMeterDecayTime), Segment.FixedUpdate);
-                }
             }
             else if (ev.Attacker == player && ev.Amount > 0)
             {
@@ -105,7 +109,8 @@
             UnregisterEvents();
             KillCoroutines();
 
-            if (player == null) return;
+            if (player == null) 
+                return;
 
             scp207.ServerDisable();
             sinkHole.ServerDisable();
@@ -124,7 +129,7 @@
             }
             catch (Exception exception)
             {
-                Log.Error($"Cannot destroy, IsPlayerNull: {player == null} Error: {exception}");
+                Log.Error($"Error, cannot destroy: {exception}");
             }
         }
 
@@ -140,7 +145,8 @@
 
             while (waitedTime < totalWaitTime)
             {
-                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) player.EnableEffect<SinkHole>();
+                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) 
+                    player.EnableEffect<SinkHole>();
 
                 waitedTime += interval;
 
@@ -163,14 +169,18 @@
 
                 AngerMeter -= BetterScp939.Instance.Config.AngerMeterDecayValue;
 
-                if (AngerMeter < 0) AngerMeter = 0;
+                if (AngerMeter < 0) 
+                    AngerMeter = 0;
             }
         }
 
         private void KillCoroutines()
         {
-            if (forceSlowDownCoroutine.IsRunning) Timing.KillCoroutines(forceSlowDownCoroutine);
-            if (angerMeterDecayCoroutine.IsRunning) Timing.KillCoroutines(angerMeterDecayCoroutine);
+            if (forceSlowDownCoroutine.IsRunning) 
+                Timing.KillCoroutines(forceSlowDownCoroutine);
+
+            if (angerMeterDecayCoroutine.IsRunning) 
+                Timing.KillCoroutines(angerMeterDecayCoroutine);
         }
     }
 }

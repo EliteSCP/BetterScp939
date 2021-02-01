@@ -18,7 +18,12 @@
         {
         }
 
-        public override void OnEnabled() => RegisterEvents();
+        public override void OnEnabled()
+        {
+            RegisterEvents();
+
+            base.OnEnabled();
+        }
 
         public override void OnDisabled()
         {
@@ -29,6 +34,8 @@
                 if (player.ReferenceHub.TryGetComponent<BetterScp939Controller>(out var customScp939))
                     customScp939.Destroy();
             }
+
+            base.OnDisabled();
         }
 
         internal void RegisterEvents()
