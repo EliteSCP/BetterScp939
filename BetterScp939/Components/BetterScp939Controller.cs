@@ -63,7 +63,7 @@
                 return;
             }
 
-            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans) 
+            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans)
                 player.EnableEffect<Scp207>();
         }
 
@@ -109,7 +109,7 @@
             UnregisterEvents();
             KillCoroutines();
 
-            if (player == null) 
+            if (player == null)
                 return;
 
             scp207.ServerDisable();
@@ -145,7 +145,7 @@
 
             while (waitedTime < totalWaitTime)
             {
-                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed) 
+                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed)
                     player.EnableEffect<SinkHole>();
 
                 waitedTime += interval;
@@ -169,17 +169,17 @@
 
                 AngerMeter -= BetterScp939.Instance.Config.AngerMeterDecayValue;
 
-                if (AngerMeter < 0) 
+                if (AngerMeter < 0)
                     AngerMeter = 0;
             }
         }
 
         private void KillCoroutines()
         {
-            if (forceSlowDownCoroutine.IsRunning) 
+            if (forceSlowDownCoroutine.IsRunning)
                 Timing.KillCoroutines(forceSlowDownCoroutine);
 
-            if (angerMeterDecayCoroutine.IsRunning) 
+            if (angerMeterDecayCoroutine.IsRunning)
                 Timing.KillCoroutines(angerMeterDecayCoroutine);
         }
     }

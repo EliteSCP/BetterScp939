@@ -3,20 +3,18 @@
     using Components;
     using Events;
     using Exiled.API.Features;
-    using System;
     using PlayerEvents = Exiled.Events.Handlers.Player;
 
     public class BetterScp939 : Plugin<Config>
     {
-        private static readonly Lazy<BetterScp939> LazyInstance = new Lazy<BetterScp939>(() => new BetterScp939());
-
-        internal PlayerHandler PlayerHandler { get; set; }
-
-        public static BetterScp939 Instance => LazyInstance.Value;
+        private static readonly BetterScp939 InstanceValue = new BetterScp939();
+        private PlayerHandler playerHandler;
 
         private BetterScp939()
         {
         }
+
+        public static BetterScp939 Instance => InstanceValue;
 
         public override void OnEnabled()
         {
@@ -40,16 +38,16 @@
 
         internal void RegisterEvents()
         {
-            PlayerHandler = new PlayerHandler();
+            playerHandler = new PlayerHandler();
 
-            PlayerEvents.ChangingRole += PlayerHandler.OnSetClass;
+            PlayerEvents.ChangingRole += playerHandler.OnSetClass;
         }
 
         internal void UnregisterEvents()
         {
-            PlayerEvents.ChangingRole -= PlayerHandler.OnSetClass;
+            PlayerEvents.ChangingRole -= playerHandler.OnSetClass;
 
-            PlayerHandler = null;
+            playerHandler = null;
         }
     }
 }
