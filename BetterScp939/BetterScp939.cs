@@ -3,12 +3,15 @@
     using Components;
     using Events;
     using Exiled.API.Features;
+    using System;
     using PlayerEvents = Exiled.Events.Handlers.Player;
 
     public class BetterScp939 : Plugin<Config>
     {
         private static readonly BetterScp939 InstanceValue = new BetterScp939();
         private PlayerHandler playerHandler;
+
+        public override Version RequiredExiledVersion { get; } = new Version(2, 1, 34);
 
         private BetterScp939()
         {
