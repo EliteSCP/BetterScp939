@@ -69,10 +69,7 @@
 
         public void OnHurting(HurtingEventArgs ev)
         {
-            if (!ev.IsAllowed)
-                return;
-
-            if (ev.Target == player)
+            if (ev.IsAllowed && ev.Target == player)
             {
                 if (ev.DamageType != DamageTypes.Scp207)
                     player.Health += ev.Amount < 0 ? -9999999f : -ev.Amount;
