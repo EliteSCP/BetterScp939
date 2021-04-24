@@ -69,6 +69,9 @@
 
         public void OnHurting(HurtingEventArgs ev)
         {
+            if (!ev.IsAllowed)
+                return;
+
             if (ev.Target == player)
             {
                 if (ev.DamageType != DamageTypes.Scp207)
@@ -89,7 +92,7 @@
                 if (AngerMeter > BetterScp939.Instance.Config.AngerMeterMaximum)
                     AngerMeter = BetterScp939.Instance.Config.AngerMeterMaximum;
 
-                player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
+                player.ArtificialHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxArtificialHealth);
 
                 if (!angerMeterDecayCoroutine.IsRunning)
                     angerMeterDecayCoroutine = Timing.RunCoroutine(AngerMeterDecay(BetterScp939.Instance.Config.AngerMeterDecayTime), Segment.FixedUpdate);
@@ -118,7 +121,7 @@
             AngerMeter = 0;
 
             player.Scale = new Vector3(1, 1, 1);
-            player.AdrenalineHealth = 0;
+            player.ArtificialHealth = 0;
         }
 
         public void Destroy()
@@ -156,14 +159,14 @@
             sinkHole.ServerDisable();
 
             if (BetterScp939.Instance.Config.ResetAngerAfterHitSlowDown)
-                AngerMeter = player.AdrenalineHealth = 0;
+                AngerMeter = player.ArtificialHealth = 0;
         }
 
         private IEnumerator<float> AngerMeterDecay(float waitTime)
         {
             while (AngerMeter > 0)
             {
-                player.AdrenalineHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxAdrenalineHealth);
+                player.ArtificialHealth = (byte)(AngerMeter / BetterScp939.Instance.Config.AngerMeterMaximum * player.MaxArtificialHealth);
 
                 yield return Timing.WaitForSeconds(waitTime);
 
