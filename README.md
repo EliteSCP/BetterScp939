@@ -11,4 +11,4 @@ The adrenaline bar will show how much **angry** it is.
 [EXILED](https://github.com/galaxy119/EXILED) **2.1.34+**
 
 ## How to install
-Put **BetterSCP939.dll** inside `%appdata%\Plugins` if you're on **Windows** or `~/.config/Plugins` on **Linux**.
+Put **BetterScp939.dll** inside `%appdata%\Plugins` if you're on **Windows** or `~/.config/Plugins` on **Linux**.
