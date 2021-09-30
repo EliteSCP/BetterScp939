@@ -63,7 +63,7 @@
                 return;
             }
 
-            if (!scp207.Enabled && !sinkHole.Enabled && BetterScp939.Instance.Config.IsFasterThanHumans)
+            if (!scp207.IsEnabled && !sinkHole.IsEnabled && BetterScp939.Instance.Config.IsFasterThanHumans)
                 player.EnableEffect<Scp207>();
         }
 
@@ -112,8 +112,8 @@
             if (player == null)
                 return;
 
-            scp207.ServerDisable();
-            sinkHole.ServerDisable();
+            scp207.IsEnabled = false;
+            sinkHole.IsEnabled = false;
 
             AngerMeter = 0;
 
@@ -141,11 +141,11 @@
         {
             var waitedTime = 0f;
 
-            scp207.ServerDisable();
+            scp207.IsEnabled = false;
 
             while (waitedTime < totalWaitTime)
             {
-                if (!sinkHole.Enabled && BetterScp939.Instance.Config.ShouldGetSlowed)
+                if (!sinkHole.IsEnabled && BetterScp939.Instance.Config.ShouldGetSlowed)
                     player.EnableEffect<SinkHole>();
 
                 waitedTime += interval;
@@ -153,7 +153,7 @@
                 yield return Timing.WaitForSeconds(interval);
             }
 
-            sinkHole.ServerDisable();
+            sinkHole.IsEnabled = false;
 
             if (BetterScp939.Instance.Config.ResetAngerAfterHitSlowDown)
                 AngerMeter = player.ArtificialHealth = 0;
