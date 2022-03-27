@@ -11,7 +11,7 @@
         private static readonly BetterScp939 InstanceValue = new BetterScp939();
         private PlayerHandler playerHandler;
 
-        public override Version RequiredExiledVersion { get; } = new Version(3, 0, 4);
+        public override Version RequiredExiledVersion { get; } = new Version(5, 0, 0);
 
         private BetterScp939()
         {

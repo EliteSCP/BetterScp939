@@ -1,6 +1,7 @@
 ﻿namespace BetterScp939.Components
 {
     using CustomPlayerEffects;
+    using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
     using MEC;
@@ -14,7 +15,7 @@
         private Player player;
         private Scp207 scp207;
         private SinkHole sinkHole;
-        private List<DamageTypes.DamageType> excludedDamages;
+        private List<DamageType> excludedDamages;
         private CoroutineHandle forceSlowDownCoroutine;
         private CoroutineHandle angerMeterDecayCoroutine;
         private const float forceSlowDownInterval = 0.1f;
@@ -28,17 +29,16 @@
             player = Player.Get(gameObject);
             scp207 = player.ReferenceHub.playerEffectsController.GetEffect<Scp207>();
             sinkHole = player.ReferenceHub.playerEffectsController.GetEffect<SinkHole>();
-            excludedDamages = new List<DamageTypes.DamageType>()
+            excludedDamages = new List<DamageType>()
             {
-                DamageTypes.Tesla,
-                DamageTypes.Wall,
-                DamageTypes.Nuke,
-                DamageTypes.RagdollLess,
-                DamageTypes.Contain,
-                DamageTypes.Lure,
-                DamageTypes.Recontainment,
-                DamageTypes.Scp207,
-                DamageTypes.None
+                DamageType.Tesla,
+                DamageType.Crushed,
+                DamageType.Warhead,
+                DamageType.Custom,
+                DamageType.FemurBreaker,
+                DamageType.Recontainment,
+                DamageType.Scp207,
+                DamageType.Unknown
             };
             AngerMeter = BetterScp939.Instance.Config.StartingAnger;
             sinkHole.slowAmount = BetterScp939.Instance.Config.SlowAmount;
@@ -57,7 +57,7 @@
 
         private void Update()
         {
-            if (player == null || !player.Role.Is939())
+            if (player == null || !player.Role.Type.Is939())
             {
                 Destroy();
                 return;
@@ -71,10 +71,10 @@
         {
             if (ev.IsAllowed && ev.Target == player)
             {
-                if (ev.DamageType != DamageTypes.Scp207)
+                if (ev.Handler.Type != DamageType.Scp207)
                     player.Health += ev.Amount < 0 ? -9999999f : -ev.Amount;
 
-                if (!excludedDamages.Contains(ev.DamageType))
+                if (!excludedDamages.Contains(ev.Handler.Type))
                 {
                     AngerMeter += ev.Amount;
                 }
