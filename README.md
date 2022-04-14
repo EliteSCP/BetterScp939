@@ -8,7 +8,7 @@ The adrenaline bar will show how much **angry** it is.
 **Credits to Reddking#2021 for the great idea.**
 
 ## Minimum requirements
-[EXILED](https://github.com/galaxy119/EXILED) **3.0.0-alpha.88+**
+[EXILED](https://github.com/galaxy119/EXILED) **5.0.0-beta.5+**
 
 ## How to install
 Put **BetterScp939.dll** inside `%appdata%\Plugins` if you're on **Windows** or `~/.config/Plugins` on **Linux**.
