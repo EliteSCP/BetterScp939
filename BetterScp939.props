@@ -12,6 +12,7 @@
     <Authors>iopietro</Authors>
     <Version>1.0.10</Version>
     <Copyright>Copyright © iopietro 2020-2022</Copyright>
+    <Description>An upgraded version of the already existing SCP-939.</Description>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/EliteSCP/BetterScp939</RepositoryUrl>
     <PackageProjectUrl>https://github.com/EliteSCP/BetterScp939</PackageProjectUrl>
