@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>BetterScp939</AssemblyName>
   </PropertyGroup>
@@ -6,12 +6,13 @@
   <Import Project="..\..\BetterScp939.props" />
 
   <ItemGroup>
-    <PackageReference Include="EXILED" Version="5.3.0-beta.4" />
+    <PackageReference Include="EXILED" Version="5.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp-firstpass" HintPath="$(SCPSL_REFERENCES)\Assembly-CSharp-firstpass.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(SCPSL_REFERENCES)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.PhysicsModule" HintPath="$(SCPSL_REFERENCES)\UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="Mirror" HintPath="$(SCPSL_REFERENCES)\Mirror.dll" Private="false" />
   </ItemGroup>
 </Project>
