@@ -1,3 +1,6 @@
+# THIS PLUGIN WON'T BE UPDATED
+Go check [BetterDoggie](https://github.com/NutInc/BetterDoggie) if you want a similar plugin.
+
 # BetterScp939
 An **upgraded** version of the already existing **SCP-939**.
 
